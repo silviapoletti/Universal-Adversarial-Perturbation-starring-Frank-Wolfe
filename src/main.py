@@ -5,7 +5,7 @@ _, (test_x, test_y) = load_MNIST()
 
 path = './data/lenet5'
 
-lenet5 = LeNet5(path=path, load=False)
+lenet5 = LeNet5(path=path, load=True)
 print(lenet5.model.summary())
 
 print(lenet5.predict(np.array([test_x[0, :, :]]), np.array([test_y[0]])))

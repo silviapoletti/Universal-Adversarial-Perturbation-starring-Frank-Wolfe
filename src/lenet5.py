@@ -1,8 +1,5 @@
 import tensorflow as tf
 from tensorflow import keras
-import numpy as np
-
-# './data/lenet5'
 
 
 class LeNet5:
@@ -12,7 +9,6 @@ class LeNet5:
             self.load_model(path)
         else:
             self.create_model(path)
-
 
     def create_model(self, path):
         (train_x, train_y), _ = load_MNIST()
@@ -42,17 +38,16 @@ class LeNet5:
 
         lenet_5_model.save(path)
 
-
     def load_model(self, path):
         self.model = keras.models.load_model(path)
         return self.model
 
     def predict(self, x, y):
-        '''
+        """
         :param x: it should be an array of 1 or more elements
         :param y: it should be an array of 1 or more elements
         :return: loss value
-        '''
+        """
 
         return self.model.evaluate(x, y)[0]
 
