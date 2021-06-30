@@ -7,14 +7,19 @@ import numpy as np
 
 class LeNet5:
 
-    def __init__(self, path):
-        if path:
+    def __init__(self, path, load=True):
+        if load:
             self.load_model(path)
         else:
-            self.create_model()
+            self.create_model(path)
 
-    def create_model(self):
+
+    def create_model(self, path):
         (train_x, train_y), _ = load_MNIST()
+        val_x = train_x[:5000]
+        val_y = train_y[:5000]
+        train_x = train_x[5000:]
+        train_y = train_y[5000:]
 
         lenet_5_model = keras.models.Sequential([
             keras.layers.Conv2D(6, kernel_size=5, strides=1, activation='tanh', input_shape=train_x[0].shape,
@@ -35,7 +40,7 @@ class LeNet5:
 
         self.model = lenet_5_model
 
-        lenet_5_model.save(self.path)
+        lenet_5_model.save(path)
 
 
     def load_model(self, path):
@@ -58,7 +63,5 @@ def load_MNIST():
     test_x = test_x / 255.0
     train_x = tf.expand_dims(train_x, 3)
     test_x = tf.expand_dims(test_x, 3)
-    # val_x = train_x[:5000]
-    # val_y = train_y[:5000]
 
     return (train_x, train_y), (test_x, test_y)
