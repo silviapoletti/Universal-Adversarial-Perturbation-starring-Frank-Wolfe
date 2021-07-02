@@ -8,12 +8,14 @@ import numpy as np
 
 def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsilon, d):
     """
-    :param data: images
+    :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
     :param F: loss function
     :param m: number of directions
     :param T: number of queries
     :param M: number of workers
+    :param epsilon:
+    :param d: image dimension
     :return: universal perturbation
     """
     # starting point, x is the perturbation
@@ -25,9 +27,8 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsil
         c = 2 * (m) ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
 
         for w_idx in range(0, M):
-
-            gradient_worker[w_idx, :] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, d, ro, c, m, gradient_worker[w_idx, :], F, delta)
-        #wait all workers computation
+            gradient_worker[w_idx, :] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, F, m, d, ro, c, gradient_worker[w_idx, :], delta)
+        # wait all workers computation
         g = np.average(gradient_worker, axis=0)
         v = - epsilon * np.sign(g)
         gamma = 2 / (t + 8)   # LMO
@@ -37,15 +38,18 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsil
     return delta_history
 
 
-def decentralized_worker_job(data, y, d, ro, c, m, g_prec, F, delta):
+def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
     """
-    :param d: dimension
+    :param data: n images
+    :param y: n labels
+    :param F: loss function to minimize
+    :param m: number of directions
+    :param d: images dimension
     :param ro:
     :param c:
-    :param m: directions
-    :param g: master g,  precedent
-    :param F: loss function to minimize
-    :return:
+    :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
+    :param delta: perturbation
+    :return: gradient
     """
     g = np.zeros(d)
 

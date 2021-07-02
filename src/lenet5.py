@@ -45,12 +45,16 @@ class LeNet5:
     def predict(self, x):
         """
         :param x: it should be an array of 1 or more elements
-        :param y: it should be an array of 1 or more elements
-        :return: loss value
+        :return: predicted classes
         """
         return self.model.predict_classes(x)
 
     def negative_loss(self, x, y):
+        """
+        :param x: it should be an array of 1 or more elements
+        :param y: it should be an array of 1 or more elements
+        :return: negative loss value
+        """
         return -self.model.evaluate(x, y)[0]
 
 
