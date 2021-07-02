@@ -14,7 +14,7 @@ lenet5 = LeNet5(path=path, load=True)
 epsilon = 0.25
 d = 28*28
 
-loss, lab = lenet5.predict(test_x, test_y)
+lab = lenet5.predict(test_x)
 indexes = lab == test_y
 data = test_x[indexes]
 labels = test_y[indexes]
@@ -36,20 +36,13 @@ for offset in range(0, 100, M):
         image_worker.extend(data_per_classes[c, offset:offset+M, :, :, :])
     data_workers.append(image_worker)
 
-print(np.array(data_workers).shape)  # now all 10 workers have 100 images, 10 for each class.
+data_workers = np.array(data_workers)
+print(data_workers.shape)  # now all 10 workers have 100 images, 10 for each class.
 
 y = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 y = np.repeat(y, 10)
-print(y)
 
-gradient_worker = np.zeros((M, d))
-print(gradient_worker.shape)
-# print(gradient_worker[0, :] != np.zeros((1, d)))
-
-if np.array_equal(gradient_worker[0, :], np.zeros((1, d))):
-    print("ok")
-
-
-if gradient_worker[0, :] is np.zeros((1, d)):
-    print("ok 2")
-
+m = 50
+T = 20
+delta = decentralized_stochastic_gradient_free_FW(data_workers, y, lenet5.negative_loss, m, T, M, epsilon, d)
+print(delta)

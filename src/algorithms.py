@@ -25,17 +25,15 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsil
         c = 2 * (m) ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
 
         for w_idx in range(0, M):
-            gradient_worker[w_idx] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, d, ro, c, m,
-                                                              gradient_worker[w_idx, :], F, delta)
 
+            gradient_worker[w_idx, :] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, d, ro, c, m, gradient_worker[w_idx, :], F, delta)
         #wait all workers computation
-        g = np.average(g_worker)
-        vt = - epsilon * np.sign(g)
-        gamma = 2 / (t + 8)
-        delta = (1-gamma) * delta + gamma * vt
+        g = np.average(gradient_worker, axis=0)
+        v = - epsilon * np.sign(g)
+        gamma = 2 / (t + 8)   # LMO
+        delta = (1-gamma) * delta + gamma * v
         delta_history.append(delta)
         # send to all nodes
-        # what the fuck is x for worker and for master???? Worker should sample from the data points!!!??
     return delta_history
 
 
@@ -49,14 +47,21 @@ def decentralized_worker_job(data, y, d, ro, c, m, g_prec, F, delta):
     :param F: loss function to minimize
     :return:
     """
-    z = np.random.normal(loc=0.0, scale=1.0, size=(d, 1))
+    print("hey")
+    g = np.zeros(d)
 
-    g = 1/m * (np.sum((F(data + delta + c * z, y) - F(data + delta, y)) / c) * z)  # element wise product inside the summation, then i apply the sum
+    # reshape:
+    delta = np.tile(delta, 100)
+    delta = delta.reshape((100,28,28,1))
+    for i in range(0, m):
+        z = np.random.normal(loc=0.0, scale=1.0, size=d)
+        cz = c*z
+        cz = np.tile(cz, 100)
+        cz = cz.reshape((100, 28, 28, 1))
+        g += 1/c * (F(data + delta + cz, y) - F(data + delta, y)) * z
+    g = g/m
 
-    if g_prec != np.zeros((1, d)):
+    if not np.array_equal(g_prec, np.zeros(d)):
         g = (1 - ro) * g_prec + ro * g
 
     return g
-
-def sample_data_point():
-    pass

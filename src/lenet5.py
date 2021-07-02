@@ -42,14 +42,16 @@ class LeNet5:
         self.model = keras.models.load_model(path)
         return self.model
 
-    def predict(self, x, y):
+    def predict(self, x):
         """
         :param x: it should be an array of 1 or more elements
         :param y: it should be an array of 1 or more elements
         :return: loss value
         """
+        return self.model.predict_classes(x)
 
-        return self.model.evaluate(x, y)[0], self.model.predict_classes(x)
+    def negative_loss(self, x, y):
+        return -self.model.evaluate(x, y)[0]
 
 
 def load_MNIST():
