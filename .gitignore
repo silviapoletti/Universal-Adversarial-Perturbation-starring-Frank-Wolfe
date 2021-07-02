@@ -8,3 +8,6 @@ __pycache__/
 ./envs
 
 /data/**/*.csv
+
+#jupyter
+src/.ipynb_checkpoints/
