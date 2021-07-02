@@ -1,6 +1,7 @@
 from algorithms import *
 from lenet5 import *
 import numpy as np
+import matplotlib.pyplot as plt
 
 _, (test_x, test_y) = load_MNIST()
 
@@ -42,7 +43,13 @@ print(data_workers.shape)  # now all 10 workers have 100 images, 10 for each cla
 y = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 y = np.repeat(y, 10)
 
-m = 50
+m = 1
 T = 20
 delta = decentralized_stochastic_gradient_free_FW(data_workers, y, lenet5.negative_loss, m, T, M, epsilon, d)
 print(delta)
+
+fig, ax = plt.subplots(figsize=(12, 12))
+img = plt.imshow(delta[-1].reshape((28, 28)))
+plt.savefig(f"./perturbation_{m}", bbox_inches="tight")
+fig.colorbar(img, ax=ax, fraction=0.03, pad=0.05)
+plt.show()

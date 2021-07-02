@@ -47,7 +47,6 @@ def decentralized_worker_job(data, y, d, ro, c, m, g_prec, F, delta):
     :param F: loss function to minimize
     :return:
     """
-    print("hey")
     g = np.zeros(d)
 
     # reshape:
