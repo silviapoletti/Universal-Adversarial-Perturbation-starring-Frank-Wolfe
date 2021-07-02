@@ -31,6 +31,7 @@ data_workers = []
 
 
 
+#TODO: controllare che torni a me sembra di si, sarebbe piu bello generalizzare meglio facendo la divisone intera.
 # Ad ogni 10 colonne formo un worker delle immagini di diverse label formo un worker
 idx = 0
 for j in range(0, 10):
