@@ -10,7 +10,6 @@ b = np.full(d, epsilon)
 C = pc.Polytope(A, b)
 
 vertices = pypoman.compute_polytope_vertices(A, b)
-workers = []
 
 print(vertices)
 
@@ -31,14 +30,13 @@ def decentralized_stochastic_gradient_free_FW(data, y, F, vertices, m, T, M):
     :param M: number of workers
     :return:
     """
-    x_orig = x.copy()
-    #starting point
+    #starting point, x is the perturbation
     x = np.zeros(d) # x starting point: x_0
     loss_history = []
     g_worker = np.array(M) # should hold precedent g worker, handled by master.
     for t in range(0, T):
-        for w in workers:
-            g_worker[w] = decentralized_worker_job(28*28, t, m, g_worker[w], F, y)
+        for w_idx in range(0, M):
+            g_worker[w_idx] = decentralized_worker_job(28*28, t, m, g_worker[w_idx], F, x,y)
 
         #wait all workers computation
         g = np.average(g_worker)
@@ -48,10 +46,10 @@ def decentralized_stochastic_gradient_free_FW(data, y, F, vertices, m, T, M):
         loss_history.append(x)
         # send to all nodes
         # what the fuck is x for worker and for master???? Worker should sample from the data points!!!??
-    return loss_history
+    return x, loss_history
 
 
-def decentralized_worker_job(d, t, m, g, F, y):
+def decentralized_worker_job(d, t, m, g, F, delta, y):
     '''
     :param d: dimension
     :param t:
@@ -66,9 +64,9 @@ def decentralized_worker_job(d, t, m, g, F, y):
     c = 2 * (m)**(1/2) / (d**(3/2) * (t+8)**(1/3))
 
     g_prec = g.copy()
-    x = sample_data_point()
+    data_point = sample_data_point()
 
-    g = 1/m * (np.sum((F(x + c * z, y) - F(x, y))/ c) * z) # element wise product inside the summation, then i apply the sum
+    g = 1/m * (np.sum((F(x + c * z, y) - F(data_point + delta, y))/ c) * z) # element wise product inside the summation, then i apply the sum
     g = (1 - ro) *  g_prec + ro * g
     return g
 
