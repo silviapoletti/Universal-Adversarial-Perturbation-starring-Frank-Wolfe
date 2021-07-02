@@ -1,5 +1,4 @@
-import polytope as pc
-import pypoman
+
 import numpy as np
 
 #TODO: what is F function?
@@ -7,7 +6,7 @@ import numpy as np
 #TODO: does the worker sample the data points or is the same of the master x_t?
 #TODO: x0 is the 0? which point is the starting point? is a feasible but which one is it?
 
-def decentralized_stochastic_gradient_free_FW(F, m, T, M,epsilon,d):
+def decentralized_stochastic_gradient_free_FW(data_workers, F, m, T, M,epsilon,d):
     """
     :param data: images
     :param y: labels

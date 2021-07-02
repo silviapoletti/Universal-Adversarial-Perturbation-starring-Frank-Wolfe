@@ -1,5 +1,6 @@
 from lenet5 import *
 import numpy as np
+import algorithms
 
 _, (test_x, test_y) = load_MNIST()
 
@@ -20,16 +21,24 @@ labels = test_y[indexes]
 
 print(len(labels))  # 9826
 
-data_0 = data[labels == 0][:100]
-data_1 = data[labels == 1][:100]
-data_2 = data[labels == 2][:100]
-data_3 = data[labels == 3][:100]
-data_4 = data[labels == 4][:100]
-data_5 = data[labels == 5][:100]
-data_6 = data[labels == 6][:100]
-data_7 = data[labels == 7][:100]
-data_8 = data[labels == 8][:100]
-data_9 = data[labels == 9][:100]
-
 M = 10
-#for w_idx in range(1,M):
+data_per_classes = []
+for label_class in range(0, 10):
+    data_per_classes.append(data[labels == label_class][:100])
+
+data_per_classes = np.array(data_per_classes)
+data_workers = []
+
+
+
+# Ad ogni 10 colonne formo un worker delle immagini di diverse label formo un worker
+idx = 0
+for j in range(0, 10):
+    image_worker = []
+    for i in range(0, 10):
+        image_worker.extend(data_per_classes[:, idx, :, :, :])
+        idx = idx + 1
+    data_workers.append(image_worker)
+
+print(np.array(data_workers).shape) # all 10 workers, now have 100 images each of 10 classes.
+# I think it does work now.
