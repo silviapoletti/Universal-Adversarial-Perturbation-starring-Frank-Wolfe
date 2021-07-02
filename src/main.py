@@ -9,6 +9,7 @@ path = './data/lenet5'
 
 lenet5 = LeNet5(path=path, load=True)
 
+#example of predictions
 #print(lenet5.predict(np.array([test_x[0, :, :]]), np.array([test_y[0]])))
 #print(lenet5.predict(test_x[0:10, :, :], test_y[0:10]))
 
@@ -43,13 +44,22 @@ print(data_workers.shape)  # now all 10 workers have 100 images, 10 for each cla
 y = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 y = np.repeat(y, 10)
 
-m = 1
+m = 20
 T = 20
 delta = decentralized_stochastic_gradient_free_FW(data_workers, y, lenet5.negative_loss, m, T, M, epsilon, d)
 print(delta)
 
 fig, ax = plt.subplots(figsize=(12, 12))
 img = plt.imshow(delta[-1].reshape((28, 28)))
-plt.savefig(f"./perturbation_{m}", bbox_inches="tight")
 fig.colorbar(img, ax=ax, fraction=0.03, pad=0.05)
+plt.savefig(f"./perturbation_{m}", bbox_inches="tight")
 plt.show()
+
+image = test_x[5].numpy().reshape(28, 28)
+img_noise = image + delta[-1].reshape((28, 28))
+fig, ax = plt.subplots(1, 2,figsize=(5, 5))
+ax[0].imshow(image, cmap='Greys')
+ax[1].imshow(img_noise, cmap='Greys')
+plt.savefig(f"./image_perturbation_example_{m}", bbox_inches="tight")
+plt.show()
+print(lenet5.predict(np.array([img_noise.reshape(28, 28 ,1)])))
