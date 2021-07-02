@@ -2,51 +2,38 @@ import polytope as pc
 import pypoman
 import numpy as np
 
-epsilon = 0.25
-# d = 28*28
-d = 3
-A = np.identity(d)
-b = np.full(d, epsilon)
-C = pc.Polytope(A, b)
-
-vertices = pypoman.compute_polytope_vertices(A, b)
-
-print(vertices)
-
-
 #TODO: what is F function?
 #TODO: x_t is delta_t?
 #TODO: does the worker sample the data points or is the same of the master x_t?
 #TODO: x0 is the 0? which point is the starting point? is a feasible but which one is it?
-#TODO:
-def decentralized_stochastic_gradient_free_FW(data, y, F, vertices, m, T, M):
+
+def decentralized_stochastic_gradient_free_FW(F, m, T, M,epsilon,d):
     """
-    :param x: images
+    :param data: images
     :param y: labels
     :param F: loss function
-    :param C: polytope
     :param m: number of directions
     :param T: number of queries
     :param M: number of workers
-    :return:
+    :return: universal perturbation
     """
     #starting point, x is the perturbation
-    x = np.zeros(d) # x starting point: x_0
-    loss_history = []
+    delta = np.zeros(d) # starting point: delta_0
+    delta_history = []
     g_worker = np.array(M) # should hold precedent g worker, handled by master.
     for t in range(0, T):
         for w_idx in range(0, M):
-            g_worker[w_idx] = decentralized_worker_job(28*28, t, m, g_worker[w_idx], F, x,y)
+            g_worker[w_idx] = decentralized_worker_job(d, t, m, g_worker[w_idx], F, delta,y)
 
         #wait all workers computation
         g = np.average(g_worker)
-        vt = - epsilon * np.sign(g) + x0 # TODO: check x_orig
+        vt = - epsilon * np.sign(g)
         gamma = 2 / (t + 8)
-        x =  (1-gamma) * x + gamma * vt
-        loss_history.append(x)
+        delta =  (1-gamma) * delta + gamma * vt
+        delta_history.append(delta)
         # send to all nodes
         # what the fuck is x for worker and for master???? Worker should sample from the data points!!!??
-    return x, loss_history
+    return delta, delta_history
 
 
 def decentralized_worker_job(d, t, m, g, F, delta, y):

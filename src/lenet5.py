@@ -49,7 +49,7 @@ class LeNet5:
         :return: loss value
         """
 
-        return self.model.evaluate(x, y)[0]
+        return self.model.evaluate(x, y)[0], self.model.predict_classes(x)
 
 
 def load_MNIST():
