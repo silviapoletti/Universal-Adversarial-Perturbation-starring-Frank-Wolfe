@@ -49,13 +49,14 @@ class LeNet5:
         """
         return self.model.predict_classes(x)
 
-    def negative_loss(self, x, y):
+    def negative_loss(self, x, y, verbose=0):
         """
         :param x: it should be an array of 1 or more elements
         :param y: it should be an array of 1 or more elements
+        :param verbose:
         :return: negative loss value
         """
-        return -self.model.evaluate(x, y)[0]
+        return -self.model.evaluate(x, y, verbose=verbose)[0]
 
 
 def load_MNIST():
