@@ -2,6 +2,7 @@ from algorithms import *
 from lenet5 import *
 import numpy as np
 import matplotlib.pyplot as plt
+import utils
 
 _, (test_x, test_y) = load_MNIST()
 
@@ -73,9 +74,9 @@ print(lenet5.predict(np.array([img_noise.reshape(28, 28, 1)])))
 images = data[:1000]
 targets = labels[:1000]
 n = 5
-# S2 = n' * m
+S2_card = 3
+
+# S2 = n' * 1
 # n' = 2, 3,  4
 # m = 18, 12, 9
 # S2 = 36
-
-

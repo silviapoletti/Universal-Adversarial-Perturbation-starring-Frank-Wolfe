@@ -1,5 +1,5 @@
 import numpy as np
-
+import utils
 #TODO: x0 is the 0? which point is the starting point? is a feasible but which one is it?
 
 
@@ -71,7 +71,7 @@ def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
     return g
 
 
-def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, epsilon, d, tol=None):
+def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n_comps, epsilon, d, tol=None):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
@@ -79,6 +79,7 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, epsilon, 
     :param m: number of directions
     :param T: number of queries
     :param M: number of workers
+    :param n_comps: component functions, is the magic number
     :param epsilon:
     :param d: image dimension
     :param tol: tolerance for duality gap
@@ -88,10 +89,13 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, epsilon, 
     delta = np.zeros(d)  # starting point: delta_0
     delta_history = []
     gradient_worker = np.zeros((M, d))  # should hold workers' precedent g, handled by master.
+
+    np.random.randint(low=1, high=len(n+1))
+
     for t in range(0, T):
         print("Iteration number ", t+1)
-        ro = 4 / ((1 + d / m) ** (1 / 3) * (t + 8) ** (2 / 3))
-        c = 2 * m ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
+        #ro = 4 / ((1 + d / m) ** (1 / 3) * (t + 8) ** (2 / 3))
+        eta = 2 * m ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
 
         for w_idx in range(0, M):
             gradient_worker[w_idx, :] = decentralized_worker_job_variance_reduced(
