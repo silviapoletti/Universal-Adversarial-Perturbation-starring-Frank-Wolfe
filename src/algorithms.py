@@ -148,13 +148,17 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
             e[k] = eta_KWSA
             # sampling of S1_prime images:
             sampling_index = np.random.randint(low=0,high=data.shape[0],size=size*n)
-            sampling_images = data[sampling_index,:,:,:]
+            sampling_images = np.take(data, sampling_index, axis=0)
             sampling_labels = y[sampling_index]
+            e = np.tile(e, size)
+            e = e.reshape((size, 28, 28, 1))
+            verbose = 0
             for j in range(0, n):
-                e = np.tile(e, size)
-                e = e.reshape((size, 28, 28, 1))
-                g[k] += 1 / eta_KWSA * (F(sampling_images[j*size:(j+1)*size,:,:,:] + delta + e, sampling_labels[j*size:(j+1)*size])
-                                   - F(sampling_images[j*size:(j+1)*size,:,:,:] + delta, sampling_labels[j*size:(j+1)*size]))
+                if j == n-1:
+                    verbose = 1
+
+                g[k] += 1 / eta_KWSA * (F(sampling_images[j*size : (j+1)*size,:,:,:] + delta + e, sampling_labels[j*size:(j+1)*size], verbose = verbose)
+                                   - F(sampling_images[j*size : (j+1)*size,:,:,:] + delta, sampling_labels[j*size:(j+1)*size]))
             g[k] = g[k] / n
 
     else:
@@ -165,7 +169,7 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
         eta_z = eta_z.reshape((S2, 28, 28, 1))
         # sampling:
         sampling_index = np.random.randint(low=0, high=n, size=S2)
-        sampling_images = data[sampling_index, :, :, :]
+        sampling_images = np.take(data, sampling_index, axis=0)
         sampling_labels = y[sampling_index]
         for j in sampling_index:
             g += 1 / eta_RDSA * ((F(sampling_images[j*size:(j+1)*size,:,:,:] + delta + eta_z, sampling_labels[j*size:(j+1)*size]) -
