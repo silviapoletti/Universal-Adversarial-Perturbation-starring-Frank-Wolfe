@@ -71,7 +71,7 @@ def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
     return g
 
 
-def decentralized_variance_reduced_zo_FW(data_workers, y, F, m, T, M, epsilon, d, tol=None):
+def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, epsilon, d, tol=None):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels

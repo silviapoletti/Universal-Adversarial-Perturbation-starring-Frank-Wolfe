@@ -46,6 +46,8 @@ y = np.repeat(y, 10)
 
 m = 20
 T = 20
+
+# DECENTRALIZED
 delta = decentralized_stochastic_gradient_free_FW(data_workers, y, lenet5.negative_loss, m, T, M, epsilon, d)
 print(delta)
 
@@ -63,3 +65,17 @@ ax[1].imshow(img_noise, cmap='Greys')
 plt.savefig(f"./img/image_perturbation_example_{m}", bbox_inches="tight")
 plt.show()
 print(lenet5.predict(np.array([img_noise.reshape(28, 28, 1)])))
+
+# DECENTRALIZED VARIANCE REDUCED
+# S_1 = 1000
+# M = 10
+# S_1' = 1000/M = 100
+images = data[:1000]
+targets = labels[:1000]
+n = 5
+# S2 = n' * m
+# n' = 2, 3,  4
+# m = 18, 12, 9
+# S2 = 36
+
+
