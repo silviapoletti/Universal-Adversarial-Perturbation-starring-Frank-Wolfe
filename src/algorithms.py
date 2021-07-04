@@ -71,7 +71,7 @@ def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
     return g
 
 
-def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n_comps, epsilon, d, tol=None):
+def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n, epsilon, d, q, S1, tol=None):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
@@ -79,7 +79,7 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n_comps, 
     :param m: number of directions
     :param T: number of queries
     :param M: number of workers
-    :param n_comps: component functions, is the magic number
+    :param n: component functions, is the magic number
     :param epsilon:
     :param d: image dimension
     :param tol: tolerance for duality gap
@@ -87,19 +87,19 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n_comps, 
     """
     # starting point, x is the perturbation
     delta = np.zeros(d)  # starting point: delta_0
-    delta_history = []
-    gradient_worker = np.zeros((M, d))  # should hold workers' precedent g, handled by master.
+    delta_history = [delta]
 
-    np.random.randint(low=1, high=len(n+1))
+    gradient_worker = np.zeros((M, d))  # should hold workers' precedent g, handled by master.
 
     for t in range(0, T):
         print("Iteration number ", t+1)
-        #ro = 4 / ((1 + d / m) ** (1 / 3) * (t + 8) ** (2 / 3))
-        eta = 2 * m ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
+        eta_RDSA = 2/(d**(3/2)*(t+8)**(1/3))
+        eta_KWSA = 2/(d**(1/2)*(t+8)**(1/3))
+        delta_prec = None if t == 0 else delta_history[-2]
 
         for w_idx in range(0, M):
             gradient_worker[w_idx, :] = decentralized_worker_job_variance_reduced(
-                data_workers[w_idx, :, :, :, :], y, F, m, d, ro, c, gradient_worker[w_idx, :], delta)
+                data_workers, y, t, F, d, eta_RDSA, eta_KWSA, gradient_worker[w_idx, :], delta, q, S1, S2, n, M, delta_prec)
         # wait all workers computation
         g = np.average(gradient_worker, axis=0)
         v = - epsilon * np.sign(g)
@@ -111,7 +111,7 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n_comps, 
     return delta_history
 
 
-def decentralized_worker_job_variance_reduced(data, y, F, d, eta, g_prec, delta, t, q, S_1, S_2, n, M, delta_prec):
+def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KWSA, g_prec, delta, q, S1, S2, n, M, delta_prec):
     """
     :param data: n images
     :param y: n labels
@@ -120,45 +120,59 @@ def decentralized_worker_job_variance_reduced(data, y, F, d, eta, g_prec, delta,
     :param eta:
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
-    :param t: current iteration
     :param q: period
-    :param S_1:
-    :param S_2:
+    :param S1:
+    :param S2:
     :param n: number of the loss function's components
     :param M: number of workers
     :param delta_prec: perturbation computed at the previous iteration, coming from the master node
     :return: gradient
     """
-    # TODO: S_1_prime e S_2 in teoria sono due valori diversi, quindi utiliziamo un numero diverso di immagini nei due casi
+    # TODO: S1_prime e S2 in teoria sono due valori diversi, quindi utiliziamo un numero diverso di immagini nei due casi
     g = np.zeros(d)
+    size = S1 // (n * M)
+
+    # reshape:
+    delta = np.tile(delta, size)
+    delta = delta.reshape((size, 28, 28, 1))
+
+    if delta_prec is not None:
+        # reshape:
+        delta_prec = np.tile(delta_prec, size)
+        delta_prec = delta_prec.reshape((size, 28, 28, 1))
 
     if (t % q) == 0:
         # KWSA
-        S_1_prime = S_1/(M * d)
-
-        for j in range(0, n):
-            # sampling of S_1_prime images
-            e = np.zeros(n)
-            e[j] = 1
-            eta_e = eta * e
-            eta_e = np.tile(eta_e, S_1_prime)
-            eta_e = eta_e.reshape((S_1_prime, 28, 28, 1))
-            # TODO: dobbiamo normalizzare le immagini perturbate?
-            g += 1 / eta * (F(data + delta + eta_e, y) - F(data + delta, y)) * e
-        g = g / n  # TODO: non è di dimensione d ??
+        for k in range(d):
+            e = np.zeros(d)
+            e[k] = eta_KWSA
+            # sampling of S1_prime images:
+            sampling_index = np.random.randint(low=0,high=data.shape[0],size=size*n)
+            sampling_images = data[sampling_index,:,:,:]
+            sampling_labels = y[sampling_index]
+            for j in range(0, n):
+                e = np.tile(e, size)
+                e = e.reshape((size, 28, 28, 1))
+                g[k] += 1 / eta_KWSA * (F(sampling_images[j*size:(j+1)*size,:,:,:] + delta + e, sampling_labels[j*size:(j+1)*size])
+                                   - F(sampling_images[j*size:(j+1)*size,:,:,:] + delta, sampling_labels[j*size:(j+1)*size]))
+            g[k] = g[k] / n
 
     else:
         # RDSA
-        for j in range(0, S_2):
-            z = np.random.normal(loc=0.0, scale=1.0, size=d)
-
-            eta_z = eta * z
-            eta_z = np.tile(eta_z, S_2)
-            eta_z = eta_z.reshape((S_2, 28, 28, 1))
-            # TODO: dobbiamo normalizzare le immagini perturbate?
-            g += 1 / eta * ((F(data + delta + eta_z, y) - F(data + delta, y)) * z -
-                            (F(data + delta_prec + eta_z, y) - F(data + delta_prec, y)))
-        g = g / S_2
+        z = np.random.normal(loc=0.0, scale=1.0, size=d)
+        eta_z = eta_RDSA * z
+        eta_z = np.tile(eta_z, S2)
+        eta_z = eta_z.reshape((S2, 28, 28, 1))
+        # sampling:
+        sampling_index = np.random.randint(low=0, high=n, size=S2)
+        sampling_images = data[sampling_index, :, :, :]
+        sampling_labels = y[sampling_index]
+        for j in sampling_index:
+            g += 1 / eta_RDSA * ((F(sampling_images[j*size:(j+1)*size,:,:,:] + delta + eta_z, sampling_labels[j*size:(j+1)*size]) -
+                             F(sampling_images[j*size:(j+1)*size,:,:,:] + delta, sampling_labels[j*size:(j+1)*size])) * z -
+                            (F(sampling_images[j*size:(j+1)*size,:,:,:] + delta_prec + eta_z, sampling_labels[j*size:(j+1)*size]) -
+                             F(sampling_images[j*size:(j+1)*size,:,:,:] + delta_prec, sampling_labels[j*size:(j+1)*size])) * z)
+        g = g / S2
         g = g_prec + g
 
     return g

@@ -74,9 +74,8 @@ print(lenet5.predict(np.array([img_noise.reshape(28, 28, 1)])))
 images = data[:1000]
 targets = labels[:1000]
 n = 5
-S2_card = 3
+S2 = 3
+q = 5
+S1 = len(images)
 
-# S2 = n' * 1
-# n' = 2, 3,  4
-# m = 18, 12, 9
-# S2 = 36
+decentralized_variance_reduced_zo_FW(images, targets, lenet5.negative_loss, S2, T, M, n, epsilon, d, q, S1)
