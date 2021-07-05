@@ -185,6 +185,26 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
         g = g_prec + g
 
     return g
+def distributed_zo_FW(A, M, d, epsilon, T):
+    """
+    :param A: matrix
+    :param M: number of workers
+    :param d: dimension
+    :param epsilon: tolerance
+    :param T: iterations
+    :return:
+    """
+    D = np.diag(np.sum(A, axis=0))
+    L = D - A
+    D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
+    W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
+    x = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d))
+    for i in range(0,M):
+        distributed_zo_FW_worker_job_iterate(A[i,:],W[i,:],x)
 
-def distributed_zo_FW_worker_job():
-    pass
+def distributed_zo_FW_worker_job_iterate(A_row, W_row,x):
+    neighbors_indices = np.nonzero(A_row)
+    sum = np.zeros(x.shape[1])
+    for i in neighbors_indices:
+        sum += W_row[i] * x[i,:]
+    return sum
