@@ -147,7 +147,7 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
             e = np.zeros(d)
             e[k] = eta_KWSA
             # sampling of S1_prime images:
-            sampling_index = np.random.randint(low=0,high=data.shape[0], size=size*n)
+            sampling_index = np.random.randint(low=0, high=data.shape[0], size=size*n)
             sampling_images = np.take(data, sampling_index, axis=0)
             sampling_labels = y[sampling_index]
             e = np.tile(e, size)
@@ -185,3 +185,6 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
         g = g_prec + g
 
     return g
+
+def distributed_zo_FW_worker_job():
+    pass
