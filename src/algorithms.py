@@ -87,6 +87,7 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, T, M, d, epsilon, S
     :param n: total number of component functions
     :param q: period
     :param tol: tolerance for duality gap
+
     :return: universal perturbation's history
     """
     # starting point, x is the perturbation
@@ -134,6 +135,7 @@ def decentralized_worker_job_variance_reduced(data, y, F, t, M, d, S1, S2, n, q,
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
     :param delta_prec: perturbation computed at the previous iteration, coming from the master node
+
     :return: gradient
     """
     g = np.zeros(d)
@@ -184,10 +186,10 @@ def decentralized_worker_job_variance_reduced(data, y, F, t, M, d, S1, S2, n, q,
         for j in sampling_components:
             if j == sampling_components[-1]:
                 verbose = 1
-            g += 1 / eta_RDSA * ((F(sampling_images[j*size:(j+1)*size,:,:,:] + delta + eta_z, sampling_labels[j*size:(j+1)*size], verbose=verbose) -
-                             F(sampling_images[j*size:(j+1)*size,:,:,:] + delta, sampling_labels[j*size:(j+1)*size])) * z -
-                            (F(sampling_images[j*size:(j+1)*size,:,:,:] + delta_prec + eta_z, sampling_labels[j*size:(j+1)*size]) -
-                             F(sampling_images[j*size:(j+1)*size,:,:,:] + delta_prec, sampling_labels[j*size:(j+1)*size])) * z)
+            g += 1 / eta_RDSA * ((F(sampling_images[j*size:(j+1)*size, :, :, :] + delta + eta_z, sampling_labels[j*size:(j+1)*size], verbose=verbose) -
+                                  F(sampling_images[j*size:(j+1)*size, :, :, :] + delta, sampling_labels[j*size:(j+1)*size])) * z -
+                                 (F(sampling_images[j*size:(j+1)*size, :, :, :] + delta_prec + eta_z, sampling_labels[j*size:(j+1)*size]) -
+                                  F(sampling_images[j*size:(j+1)*size, :, :, :] + delta_prec, sampling_labels[j*size:(j+1)*size])) * z)
         g = g / S2
         g = g_prec + g
 
