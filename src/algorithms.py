@@ -1,5 +1,4 @@
 import numpy as np
-import utils
 
 
 def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsilon, d, tol=None):
@@ -57,6 +56,7 @@ def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
 
     return g
 
+
 # I-RDSA
 def gradient_I_RDSA_worker(data_worker, y, m, d, c, F, delta, verbose=1):
     delta = np.tile(delta, 100)
@@ -72,21 +72,22 @@ def gradient_I_RDSA_worker(data_worker, y, m, d, c, F, delta, verbose=1):
 
     return g
 
-def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n, epsilon, d, q, S1, tol=None):
+
+def decentralized_variance_reduced_zo_FW(data_workers, y, F, T, M, d, epsilon, S1, S2, n, q, tol=None):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
     :param F: loss function
-    :param S2:
     :param T: number of queries
     :param M: number of workers
-    :param n: component functions, is the magic number
+    :param d: image's dimension
     :param epsilon: tolerance
-    :param d: image dimension
+    :param S1: number of images for each worker
+    :param S2: number of component functions we consider in RDSA
+    :param n: total number of component functions
     :param q: period
-    :param S2: number of images
     :param tol: tolerance for duality gap
-    :return: universal perturbation
+    :return: universal perturbation's history
     """
     # starting point, x is the perturbation
     delta = np.zeros(d)  # starting point: delta_0
@@ -102,7 +103,8 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n, epsilo
 
         for w_idx in range(0, M):
             gradient_worker[w_idx, :] = decentralized_worker_job_variance_reduced(
-                data_workers, y, t, F, d, eta_RDSA, eta_KWSA, gradient_worker[w_idx, :], delta, q, S1, S2, n, M, delta_prec)
+                data_workers[w_idx, :, :, :, :], y, F, t, M, d, S1, S2, n, q, eta_RDSA, eta_KWSA,
+                gradient_worker[w_idx, :], delta, delta_prec)
         # wait all workers computation
         g = np.average(gradient_worker, axis=0)
         v = - epsilon * np.sign(g)
@@ -114,22 +116,23 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n, epsilo
     return delta_history
 
 
-def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KWSA, g_prec, delta, q, S1, S2, n, M, delta_prec):
+def decentralized_worker_job_variance_reduced(data, y, F, t, M, d, S1, S2, n, q, eta_RDSA, eta_KWSA, g_prec, delta, delta_prec):
     """
-    :param data: n images
-    :param y: n labels
+    :param data: images
+    :param y: labels
+    :param F: loss function
     :param t: iteration
-    :param F: loss function to minimize
-    :param d: images dimension
+    :param M: number of workers
+    :param d: image's dimension
+    :param epsilon: tolerance
+    :param S1: number of images for each worker
+    :param S2: number of component functions we consider in RDSA
+    :param n: total number of component functions
+    :param q: period
     :param eta_RDSA: parameter linked to RDSA
     :param eta_KWSA: parameter linked to KWSA
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
-    :param q: period
-    :param S1: number of images
-    :param S2:
-    :param n: number of the loss function's components
-    :param M: number of workers
     :param delta_prec: perturbation computed at the previous iteration, coming from the master node
     :return: gradient
     """
@@ -208,7 +211,7 @@ def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
     D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
     W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
     np.random.seed(36)
-    #delta = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial matrix in which each row correspond to a worker initial point
+    # delta = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial matrix in which each row correspond to a worker initial point
     delta = np.zeros((M,d))
     delta_bar = np.zeros((M, d))
     g_workers = np.zeros((M, d))
@@ -216,18 +219,18 @@ def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
     G = np.zeros((M, d))
 
     for t in range(0, T):
-        print('Iteration number ',t+1)
+        print('Iteration number ', t+1)
         c = 2 * m ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
         for i in range(0, M):
             neighbors_indices = np.nonzero(A[i, :])[0]
             delta_bar[i, :] = distributed_zo_FW_worker_job_consensus(neighbors_indices, W[i, :], delta)
 
             # Handling first iteration
-            g_prec_worker_i = g_workers[i,:].copy()
-            g_bar_prec_worker_i = g_bar[i,:].copy()
+            g_prec_worker_i = g_workers[i, :].copy()
+            g_bar_prec_worker_i = g_bar[i, :].copy()
 
             # g workers update
-            g_workers[i, :] = gradient_I_RDSA_worker(data_workers[i, : , : , :, :], y, m, d, c, F, delta_bar[i, :], verbose=1)
+            g_workers[i, :] = gradient_I_RDSA_worker(data_workers[i, :, :, :, :], y, m, d, c, F, delta_bar[i, :], verbose=1)
 
             G[i, :] = g_bar_prec_worker_i + g_workers[i, :] - g_prec_worker_i
 
@@ -251,15 +254,13 @@ def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
     return delta_bar
 
 
-
 def distributed_zo_FW_worker_job_consensus(neighbors_indices, W_row, measure):
-    '''
-
+    """
     :param neighbors_indices:
     :param W_row:
     :param measure: Measure can be delta or G gradient.
     :return:
-    '''
+    """
     tot_sum = np.zeros(measure.shape[1])
     for i in neighbors_indices:
         tot_sum += W_row[i] * measure[i,:]

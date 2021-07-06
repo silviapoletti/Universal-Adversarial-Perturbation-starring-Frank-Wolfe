@@ -14,8 +14,6 @@ S2 = 3
 n = 5
 q = 7
 
-print("Len data_workers: ", len(data_workers[0]))
-
 delta = decentralized_variance_reduced_zo_FW(data_workers, y, lenet5.negative_loss, T, M, d, epsilon, S1, S2, n, q)
 np.save(f"../../data/perturbations/reduced_variance/perturbation_variance_{n}_{q}", delta[-1])
 
