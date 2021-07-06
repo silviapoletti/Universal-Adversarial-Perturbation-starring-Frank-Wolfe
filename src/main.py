@@ -15,8 +15,8 @@ lenet5 = LeNet5(path=path, load=True)
 epsilon = 0.25
 d = 28*28
 M = 10
-m = 20
-T = 20
+m = 15
+T = 100
 
 lab = lenet5.predict(test_x)
 indexes = lab == test_y
@@ -46,24 +46,4 @@ y = np.repeat(y, 10)
 delta = decentralized_stochastic_gradient_free_FW(data_workers, y, lenet5.negative_loss, m, T, M, epsilon, d)
 print(delta)
 
-fig, ax = plt.subplots(figsize=(12, 12))
-img = plt.imshow(delta[-1].reshape((28, 28)))
-fig.colorbar(img, ax=ax, fraction=0.03, pad=0.05)
-plt.savefig(f"../data/img/decentralized_stoch/perturbation_{T}_{m}", bbox_inches="tight")
-plt.show()
-
-image = test_x[5].numpy().reshape(28, 28)
-img_noise = image + delta[-1].reshape((28, 28))
-fig, ax = plt.subplots(1, 2, figsize=(5, 5))
-ax[0].imshow(image, cmap='Greys')
-ax[1].imshow(img_noise, cmap='Greys')
-plt.savefig(f"../data/img/decentralized_stoch/image_perturbation_example_{T}_{m}", bbox_inches="tight")
-plt.show()
-print(lenet5.predict(np.array([img_noise.reshape(28, 28, 1)])))
-
-
-decentralized_variance_reduced_zo_FW(images, targets, lenet5.negative_loss, S2, T, M, n, epsilon, d, q, S1)
-
-#example of predictions
-#print(lenet5.predict(np.array([test_x[0, :, :]]), np.array([test_y[0]])))
-#print(lenet5.predict(test_x[0:10, :, :], test_y[0:10]))
+np.save(f"../data/perturbations/decentralized_stoch/report_perturbation_m{m}_T{T}", delta[-1])
