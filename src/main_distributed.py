@@ -7,14 +7,19 @@ import matplotlib.pyplot as plt
 
 data_workers, y, lenet5 = utils.get_data()
 
-M = 5  # workers
+M = 10 # workers
 # adjacency matrix
 A = np.array([
-    [1, 1, 0, 0, 1],
-    [1, 1, 1, 0, 1],
-    [0, 1, 1, 1, 0],
-    [0, 0, 1, 1, 0],
-    [1, 1, 0, 0, 1]
+    [1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
+    [1, 1, 1, 0, 1, 1, 1, 0, 1, 1],
+    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0],
+    [0, 0, 1, 1, 1, 1, 0, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [1, 1, 0, 0, 1, 1, 1, 1, 1, 1],
+    [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 0, 1, 1, 0, 1, 1, 1, 1]
 ])
 
 #A = np.ones((M, M))  # fully connected graph
@@ -24,6 +29,7 @@ D_half = np.linalg.inv(D**(1/2)) # diagonal matrix
 W = np.identity(M) - np.dot(D_half,np.dot(L,D_half))
 J = np.full((M, M), 1/M)
 norm = np.linalg.norm(W - np.full((M, M), 1/M))
+print('norm: ',norm)
 d = 784
 m = 20
 T = 10
