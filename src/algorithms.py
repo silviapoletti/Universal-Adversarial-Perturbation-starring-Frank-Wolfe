@@ -11,7 +11,7 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsil
     :param m: number of directions
     :param T: number of queries
     :param M: number of workers
-    :param epsilon:
+    :param epsilon: tolerance
     :param d: image dimension
     :param tol: tolerance for duality gap
     :return: universal perturbation
@@ -45,8 +45,8 @@ def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
     :param F: loss function to minimize
     :param m: number of directions
     :param d: images dimension
-    :param ro:
-    :param c:
+    :param ro: parameter linked to I-RDSA
+    :param c: parameter linked to I-RDSA
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
     :return: gradient
@@ -76,12 +76,14 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n, epsilo
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
     :param F: loss function
-    :param m: number of directions
+    :param S2:
     :param T: number of queries
     :param M: number of workers
     :param n: component functions, is the magic number
-    :param epsilon:
+    :param epsilon: tolerance
     :param d: image dimension
+    :param q: period
+    :param S2: number of images
     :param tol: tolerance for duality gap
     :return: universal perturbation
     """
@@ -115,13 +117,15 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
     """
     :param data: n images
     :param y: n labels
+    :param t: iteration
     :param F: loss function to minimize
     :param d: images dimension
-    :param eta:
+    :param eta_RDSA: parameter linked to RDSA
+    :param eta_KWSA: parameter linked to KWSA
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
     :param q: period
-    :param S1:
+    :param S1: number of images
     :param S2:
     :param n: number of the loss function's components
     :param M: number of workers
@@ -187,18 +191,18 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
     return g
 def distributed_zo_FW(A, M, d, epsilon, T):
     """
-    :param A: matrix
+    :param A: adjacency matrix
     :param M: number of workers
     :param d: dimension
     :param epsilon: tolerance
-    :param T: iterations
+    :param T: number of queries
     :return:
     """
     D = np.diag(np.sum(A, axis=0))
     L = D - A
     D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
     W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
-    x = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d))
+    x = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial matrix in which each row correspond to a worker initial point
     for i in range(0,M):
         distributed_zo_FW_worker_job_iterate(A[i,:],W[i,:],x)
 
