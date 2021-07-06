@@ -26,7 +26,7 @@ A = np.array([
 D = np.diag(np.sum(A, axis=0))
 L = D - A
 D_half = np.linalg.inv(D**(1/2)) # diagonal matrix
-W = np.identity(M) - np.dot(D_half,np.dot(L,D_half))
+W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
 J = np.full((M, M), 1/M)
 norm = np.linalg.norm(W - np.full((M, M), 1/M))
 print('norm: ',norm)
@@ -37,3 +37,6 @@ epsilon = 0.25
 
 delta_bar  = distributed_zo_FW(A, M, d, data_workers, y, lenet5.negative_loss, epsilon, m, T)
 np.save(f'../data/perturbations/distributed/distributed_delta_{T}_{m}', delta_bar)
+
+utils.plot_perturbation(delta_bar[-1, :], f'../data/img/distributed/distributed_delta_{T}_{m}')
+utils.plot_perturbated_img(delta_bar[-1, :], data_workers[1, 1], f'../data/img/distributed/perturbated_img_{T}_{m}')

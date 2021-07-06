@@ -10,7 +10,7 @@ def plot_perturbation(perturbation, file_path):
   plt.show()
 
 def plot_perturbated_img(perturbation, image_test, file_path):
-  image = image_test.numpy().reshape(28,28)
+  image = image_test.reshape(28,28)
   img_noise = image + perturbation.reshape((28, 28))
   fig, ax = plt.subplots(1, 2,figsize=(5, 5))
   a = ax[0].imshow(image, cmap='Greys')
@@ -57,5 +57,5 @@ def get_data (load=True):
     y = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     y = np.repeat(y, 10)
 
-    return data_workers, y, lenet5
+    return data_workers, y, lenet5, test_x, test_y, data, labels
 

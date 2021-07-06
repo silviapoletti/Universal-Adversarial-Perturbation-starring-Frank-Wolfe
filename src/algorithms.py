@@ -208,8 +208,8 @@ def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
     D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
     W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
     np.random.seed(36)
-    delta = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial matrix in which each row correspond to a worker initial point
-    #delta = np.zeros((M,d))
+    #delta = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial matrix in which each row correspond to a worker initial point
+    delta = np.zeros((M,d))
     delta_bar = np.zeros((M, d))
     g_workers = np.zeros((M, d))
     g_bar = np.zeros((M, d))
@@ -223,8 +223,8 @@ def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
             delta_bar[i, :] = distributed_zo_FW_worker_job_consensus(neighbors_indices, W[i, :], delta)
 
             # Handling first iteration
-            g_prec_worker_i = g_workers[i,:]
-            g_bar_prec_worker_i = g_bar[i,:]
+            g_prec_worker_i = g_workers[i,:].copy()
+            g_bar_prec_worker_i = g_bar[i,:].copy()
 
             # g workers update
             g_workers[i, :] = gradient_I_RDSA_worker(data_workers[i, : , : , :, :], y, m, d, c, F, delta_bar[i, :], verbose=1)
@@ -234,7 +234,7 @@ def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
         # After waiting all workers G gradient computation.
         for i in range(0, M):
             neighbors_indices = np.nonzero(A[i, :])[0]
-            g_bar[i, : ] = distributed_zo_FW_worker_job_consensus(neighbors_indices, W_row= W[i, :], measure = G)
+            g_bar[i, :] = distributed_zo_FW_worker_job_consensus(neighbors_indices, W_row=W[i, :], measure=G)
 
         # After waiting g_bar computation
         # Frank-Wolfe step
