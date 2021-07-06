@@ -1,6 +1,5 @@
 import numpy as np
 import utils
-#TODO: x0 is the 0? which point is the starting point? is a feasible but which one is it?
 
 
 def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsilon, d, tol=None):
@@ -51,25 +50,27 @@ def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
     :param delta: perturbation
     :return: gradient
     """
-    g = np.zeros(d)
-
-    # reshape:
-    delta = np.tile(delta, 100)
-    delta = delta.reshape((100, 28, 28, 1))
-    for i in range(0, m):
-        z = np.random.normal(loc=0.0, scale=1.0, size=d)
-        cz = c*z
-        cz = np.tile(cz, 100)
-        cz = cz.reshape((100, 28, 28, 1))
-        # TODO: dobbiamo normalizzare le immagini perturbate?
-        g += 1/c * (F(data + delta + cz, y) - F(data + delta, y)) * z
-    g = g/m
+    g = gradient_I_RDSA_worker(data, y, m, d, c, F, delta)
 
     if not np.array_equal(g_prec, np.zeros(d)):
         g = (1 - ro) * g_prec + ro * g
 
     return g
 
+# I-RDSA
+def gradient_I_RDSA_worker(data_worker, y, m, d, c, F, delta):
+    delta = np.tile(delta, 100)
+    delta = delta.reshape((100, 28, 28, 1))
+    g = np.zeros(d)
+    for i in range(0, m):
+        z = np.random.normal(loc=0.0, scale=1.0, size=d)
+        cz = c * z
+        cz = np.tile(cz, 100)
+        cz = cz.reshape((100, 28, 28, 1))
+        g += 1 / c * (F(data_worker + delta + cz, y) - F(data_worker + delta, y)) * z
+    g = g / m
+
+    return g
 
 def decentralized_variance_reduced_zo_FW(data_workers, y, F, S2, T, M, n, epsilon, d, q, S1, tol=None):
     """
@@ -132,7 +133,6 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
     :param delta_prec: perturbation computed at the previous iteration, coming from the master node
     :return: gradient
     """
-    # TODO: S1_prime e S2 in teoria sono due valori diversi, quindi utiliziamo un numero diverso di immagini nei due casi
     g = np.zeros(d)
     size = S1 // (n * M)
 
@@ -189,12 +189,17 @@ def decentralized_worker_job_variance_reduced(data, y, t, F, d, eta_RDSA, eta_KW
         g = g_prec + g
 
     return g
-def distributed_zo_FW(A, M, d, epsilon, T):
+
+
+def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
     """
     :param A: adjacency matrix
     :param M: number of workers
     :param d: dimension
+    :param y: labels are repeated and ordered
+    :param F: negative loss function
     :param epsilon: tolerance
+    :param m: number of directions
     :param T: number of queries
     :return:
     """
@@ -202,13 +207,58 @@ def distributed_zo_FW(A, M, d, epsilon, T):
     L = D - A
     D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
     W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
-    x = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial matrix in which each row correspond to a worker initial point
-    for i in range(0,M):
-        distributed_zo_FW_worker_job_iterate(A[i,:],W[i,:],x)
+    delta = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial in which each row correspond to a worker initial point
+    delta_bar = np.zeros((M, d))
+    g_workers = np.zeros((M, d))
+    g_bar = np.zeros((M, d))
+    G = np.zeros((M, d))
 
-def distributed_zo_FW_worker_job_iterate(A_row, W_row,x):
-    neighbors_indices = np.nonzero(A_row)
-    sum = np.zeros(x.shape[1])
+    for t in range(0, T):
+        c = 2 * m ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
+        for i in range(0, M):
+            neighbors_indices = np.nonzero(A[i, :])
+            delta_bar[i, :] = distributed_zo_FW_worker_job_consensus(neighbors_indices, W[i, :], delta)
+
+            # Handling first iteration
+            g_prec_worker_i = np.zeros(d) if t == 0 else g_workers[i, :]
+            g_bar_prec_worker_i = np.zeros(d) if t == 0 else g_bar[i, :]
+
+            # g workers update
+            g_workers[i, :] = gradient_I_RDSA_worker(data_workers[i, : , : , :, :], y, m, d, c, F, delta_bar[i, :])
+
+            G[i, :] = g_bar_prec_worker_i + g_workers[i, :] - g_prec_worker_i
+
+        # After waiting all workers G gradient computation.
+        for i in range(0, M):
+            neighbors_indices = np.nonzero(A[i, :])
+            g_bar[i, : ] = distributed_zo_FW_worker_job_consensus(neighbors_indices, W_row= W[i, :], measure = G)
+
+        # After waiting g_bar computation
+        #Frank-Wolfe step
+
+        gamma = 2/(t+8)
+        for i in range(0, M):
+            v = -epsilon * np.sign(g_bar[i, :])
+            delta[i, :] = (1 - gamma) * delta_bar[i, :] + gamma * v
+
+    # Last delta bar iterate calculation after T
+    for i in range(0, m):
+        neighbors_indices = np.nonzero(A[i, :])
+        delta_bar[i, :] = distributed_zo_FW_worker_job_consensus(neighbors_indices, W[i, :], delta)
+
+    return delta_bar
+
+
+
+def distributed_zo_FW_worker_job_consensus(neighbors_indices, W_row, measure):
+    '''
+
+    :param neighbors_indices:
+    :param W_row:
+    :param measure: Measure can be delta or G gradient.
+    :return:
+    '''
+    sum = np.zeros(measure.shape[1])
     for i in neighbors_indices:
-        sum += W_row[i] * x[i,:]
+        sum += W_row[i] * measure[i,:]
     return sum

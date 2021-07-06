@@ -23,7 +23,7 @@ def plot_perturbated_img(perturbation, m):
 
 _, (test_x, test_y) = load_MNIST()
 
-path = './data/lenet5'
+path = '../data/lenet5'
 
 lenet5 = LeNet5(path=path, load=True)
 
@@ -72,7 +72,7 @@ d = 784
 
 
 delta = decentralized_variance_reduced_zo_FW(images, targets, lenet5.negative_loss, S2, T, M, n, epsilon, d, q, S1)
-np.save(f"./data/perturbation_variance_{M}_{T}", delta[-1])
+np.save(f"../../data/perturbations/reduced_variance/perturbation_variance_{M}_{T}", delta[-1])
 delta = delta[-1]
 
 perturbation = np.tile(delta, data.shape[0])
