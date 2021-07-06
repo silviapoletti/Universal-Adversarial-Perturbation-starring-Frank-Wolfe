@@ -41,7 +41,7 @@ y = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 y = np.repeat(y, 10)
 
 # DECENTRALIZED
-delta = decentralized_stochastic_gradient_free_FW(data_workers, y, lenet5.negative_loss, m, T, M, epsilon, d)
+delta = decentralized_stochastic_gradient_free_FW(data_workers, y, lenet5.negative_loss, T, M, d, epsilon, m)
 print(delta)
 
 np.save(f"../data/perturbations/decentralized_stoch/report_perturbation_m{m}_T{T}", delta[-1])

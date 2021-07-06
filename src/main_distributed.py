@@ -34,7 +34,7 @@ m = 20
 T = 10
 epsilon = 0.25
 
-delta_bar = distributed_zo_FW(A, M, d, data_workers, y, lenet5.negative_loss, epsilon, m, T)
+delta_bar = distributed_zo_FW(data_workers, y, lenet5.negative_loss, T, M, d, epsilon, m, A)
 np.save(f'../data/perturbations/distributed/distributed_delta_{T}_{m}', delta_bar)
 
 utils.plot_perturbation(delta_bar[-1, :], f'../data/img/distributed/distributed_delta_{T}_{m}')

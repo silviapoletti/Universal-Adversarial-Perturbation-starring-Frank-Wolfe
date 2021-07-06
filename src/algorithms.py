@@ -1,16 +1,16 @@
 import numpy as np
 
 
-def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsilon, d, tol=None):
+def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsilon, m, tol=None):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
     :param F: loss function
-    :param m: number of directions
     :param T: number of queries
     :param M: number of workers
-    :param epsilon: tolerance
     :param d: image dimension
+    :param epsilon: tolerance
+    :param m: number of directions
     :param tol: tolerance for duality gap
     :return: universal perturbation
     """
@@ -24,7 +24,7 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsil
         c = 2 * m ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
 
         for w_idx in range(0, M):
-            gradient_worker[w_idx, :] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, F, m, d, ro, c, gradient_worker[w_idx, :], delta)
+            gradient_worker[w_idx, :] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, F, d, m, ro, c, gradient_worker[w_idx, :], delta)
         # wait all workers computation
         g = np.average(gradient_worker, axis=0)
         v = - epsilon * np.sign(g)
@@ -36,20 +36,20 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, m, T, M, epsil
     return delta_history
 
 
-def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
+def decentralized_worker_job(data, y, F, d, m, ro, c, g_prec, delta):
     """
     :param data: n images
     :param y: n labels
     :param F: loss function to minimize
-    :param m: number of directions
     :param d: images dimension
+    :param m: number of directions
     :param ro: parameter linked to I-RDSA
     :param c: parameter linked to I-RDSA
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
     :return: gradient
     """
-    g = gradient_I_RDSA_worker(data, y, m, d, c, F, delta)
+    g = gradient_I_RDSA_worker(data, y, F, d, m, c, delta)
 
     if not np.array_equal(g_prec, np.zeros(d)):
         g = (1 - ro) * g_prec + ro * g
@@ -58,7 +58,7 @@ def decentralized_worker_job(data, y, F, m, d, ro, c, g_prec, delta):
 
 
 # I-RDSA
-def gradient_I_RDSA_worker(data_worker, y, m, d, c, F, delta, verbose=1):
+def gradient_I_RDSA_worker(data_worker, y, F, d, m, c, delta, verbose=1):
     delta = np.tile(delta, 100)
     delta = delta.reshape((100, 28, 28, 1))
     g = np.zeros(d)
@@ -194,16 +194,18 @@ def decentralized_worker_job_variance_reduced(data, y, F, t, M, d, S1, S2, n, q,
     return g
 
 
-def distributed_zo_FW(A, M, d, data_workers, y, F, epsilon, m, T):
+def distributed_zo_FW(data_workers, y, F, T, M, d, epsilon, m, A):
     """
-    :param A: adjacency matrix
-    :param M: number of workers
-    :param d: dimension
+    :param data_workers:
     :param y: labels are repeated and ordered
     :param F: negative loss function
+    :param T: number of queries
+    :param M: number of workers
+    :param d: dimension
     :param epsilon: tolerance
     :param m: number of directions
-    :param T: number of queries
+    :param A: adjacency matrix
+
     :return:
     """
     D = np.diag(np.sum(A, axis=0))
