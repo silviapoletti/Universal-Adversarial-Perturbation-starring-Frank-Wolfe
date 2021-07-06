@@ -1,7 +1,6 @@
 from algorithms import *
 from lenet5 import *
 import numpy as np
-import matplotlib.pyplot as plt
 import utils
 
 _, (test_x, test_y) = load_MNIST()
@@ -9,7 +8,6 @@ _, (test_x, test_y) = load_MNIST()
 path = '../data/lenet5'
 
 lenet5 = LeNet5(path=path, load=True)
-
 
 # parameters:
 epsilon = 0.25
@@ -21,7 +19,7 @@ T = 100
 lab = lenet5.predict(test_x)
 indexes = lab == test_y
 data = test_x[indexes]
-labels = test_y[indexes] # 9826
+labels = test_y[indexes]  # 9826
 
 data_per_classes = []
 for label_class in range(0, 10):
