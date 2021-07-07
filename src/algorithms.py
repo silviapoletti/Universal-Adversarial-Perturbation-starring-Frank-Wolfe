@@ -180,7 +180,7 @@ def decentralized_worker_job_variance_reduced(data, y, F, t, M, d, S1, S2, n, q,
         eta_z = eta_z.reshape((size, 28, 28, 1))
         # sampling:
         sampling_index = np.random.randint(low=0, high=data.shape[0], size=size * n)
-        sampling_components = np.random.randint(low=0, high=n, size=S2)
+        sampling_components = np.random.choice(n, S2, False)
         sampling_images = np.take(data, sampling_index, axis=0)
         sampling_labels = y[sampling_index]
         verbose = 0
