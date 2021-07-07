@@ -1,1 +1,46 @@
 \section{Distributed Stochastic Gradient Free Frank Wolfe}
+In this section we discuss the Distributed Stochastic Grandient Free FW in a distributed setup. In this setting we have that the $M$ workers do not have a central coordinator, instead they exchange information in a peer-to-peer manner. The internode comunication network used by the workers is modeled as an undirected simple connective graph $G=(V,E)$, with $V=\{1, \dots, M\}$ the set of nodes and $E$ the set of comunication links. Each node comunicates and exchange information with its own neighbors, and given a node $n$ we indicate with $\Omega_n = \{l \in V | (n,l)\in E\}$ its neighborhood. Node $n$ has degree $d_n = |\Omega_n|$. Also, we use the $M \times M$ adjacency matrix $A=[A_{ij}]$ to describe the edges of the graph $G$: we have $A_{ij}=1$ if $(i,j) \in E$, otherwise we get $A_{ij}=0$. We define the diagonal matrix $D=(d_1 \dots d_M)$ in order to compute the graph Laplacian $L=D-A$. The Laplacian of $L$ is define to be the matrix
+\[
+\mathcal{L}(u,v)=
+\begin{cases}
+	1 & \text{if $u=v$ and }d_v\ne0 \\
+	-\frac{1}{\sqrt{d_ud_v}} & \text{if $u$ and $v$ are adjacent}\\
+	0 & \text{otherwise}
+	
+\end{cases}
+\]
+We can write $\mathcal{L} = D^{-1/2}LD^{-1/2}$, with the convention that $D^{-1}(v,v) = 0$ if $d_v=0$. The Laplacian $\mathcal{L}$ is used to compute the weghted matrix $W = \textbf{1}- \mathcal{L}$.\\
+At every time instat $t$ in Algorithm \ref{distributed}, an agent $i$ exchange its current iterate with its neighbors and average the iterates as follows:
+\[\bar{\text{\boldmath}\delta}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\text{\boldmath}\delta_t^i.\]
+After this, each worker $i$ use I-RDSA to compute its local gradient estimation $g_t^i$, for $i= 1, \dots, M$, using $c_t = \frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}$. When all of them are calculated, they are collected as follow:
+\[ \bar{\textbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\textbf{G}_t^j.\]
+After the update, the algorithm computes the Frank-Wolfe step, calculating the new iterate \boldmath$\delta_{t+1}^i$ using $\gamma_t= t^{-1/2}$.\\
+A distributed FW algorithm requires two round of communication: one for the iterate and one for the gradient estimate.\\
+
+The performance of Algorithm \ref{distributed} depends on how well the averaged iterates and the averaged gradient estimates are tracked across the network.
+\begin{algorithm}
+	\caption{Distributed Stochastic Gradient Free FW}\label{distributed}
+	\begin{algorithmic}[1]
+		\Require Input image \boldmath$\delta_0$, labels $y$, Loss Function $F(x;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$, adjacency matrix $A$.
+		\Ensure Average perturbated images.
+		
+		\State Initialize \boldmath$\delta_0^i = \text{0}$ for $i=1,\dots, M$.
+		\For {$t = 1, \dots, T$}
+		\State Approximate the average iterate: \newline
+		\[\bar{\text{\boldmath}\delta}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\text{\boldmath}\delta_t^i\]
+		
+		\State At each node $i$, employ I-RDSA to estimate the gradient 
+		$\textbf{g}_t^i = \sum_{j=1}^{d} \frac{F(\bar{\text{\boldmath}\delta}_t^i + c_t\textbf{e}_j) - F(\bar{\text{\boldmath}\delta}_t^i)}{c_t}\textbf{e}_j$.
+		
+		\State Approximate the average gradient:
+		\[ \textbf{G}_t^i = \bar{\textbf{g}}_{t-1}^i + \textbf{g}_t^i - \textbf{g}_{t-1}^i \]
+		\[ \bar{\textbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\textbf{G}_t^j  \]
+		
+		\State Each worker computes $\textbf{v}_t = - \varepsilon sign(\textbf{g}_t)$.
+		\State \textit{Frank-Wolfe Step}: update
+		\[\text{\boldmath}\delta_{t+1}^i \leftarrow (1-\gamma_t)\bar{\textbf{x}}_t^i + \gamma_t\textbf{v}_t^i\]
+		for all worker $i=1, \dots, M$.
+		\EndFor
+		
+	\end{algorithmic}
+\end{algorithm}

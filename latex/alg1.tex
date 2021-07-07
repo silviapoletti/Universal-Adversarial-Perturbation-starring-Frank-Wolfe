@@ -1,1 +1,32 @@
 \section{Decentralized Stochastic Gradient Free Frank Wolfe}
+In this section we discuss the Stochastic Gradient Free FW in a decentralized setup. In this setting we have some devices, that we call workers, connected to a master node to read, write and exchange information.\\
+In our case we have $M$ workers to which is spread the data, they compute their local gradient, using the loss function and the parameters given from I-RDSA, and send them to the master node who uses the gradients collected to return the new perturbated data.\\
+Given an input image \boldmath$\delta$, the algorithm initializes both the starting point and the gradient to a zero $d$-vector and $M \times d$ matrix, respectively. Then each worker computes its own gradient estimation based on the parameters given from I-RDSA in the following way:
+\[\textbf{g}_i= (1- \rho_t)\textbf{g}_{i,t-1} + \rho_t\textbf{g}_i(\text{\boldmath}\delta_t,\textbf{y}).\]
+ When all of the workers has come to the end, they send the results to the master node, which computes the average of the ones collected and get back the obtained value as new initial point \boldmath$\delta_{t+1}$:
+\[\text{\boldmath}\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t \]
+ When all of the iterations are done, the algorithm returns the average of the gradient computation done by the master node.
+
+\begin{algorithm}
+	\caption{Decentralized Stochastic Gradient Free FW}\label{decentralized}
+	\begin{algorithmic}[1]
+		\Require Input image \boldmath$\delta$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$.
+		\Ensure \boldmath$\delta^T$
+		
+		\State Initialize \boldmath$\delta_0 = \text{0}$.
+		\For {$t = 0, \dots, T-1$}
+		\State Master node computes parameters required for the computation of the I-RDSA scheme: 
+		{\scriptsize\[(\rho_t,c_t)_{I-RDSA} =\bigg(\frac{4}{\big(1+\frac{d}{m}\big)^{1/3}(t+8)^{2/3}}, \frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}\bigg)\]}
+		\State For each worker $i$ compute I-RDSA:\newline Sample $\{\textbf{z}_{n,t}\}_{n=1}^m \sim N(0, \textbf{1}_d)$ \newline
+		 $\textbf{g}_i(\text{\boldmath}\delta_t;\textbf{y}) = \frac{1}{m} \sum_{n=1}^{m} \frac{F(\text{\boldmath}\delta_t + c_t\textbf{z}_{n,t};\textbf{y}) - F(\text{\boldmath}\delta_t;\textbf{y})}{c_t}\textbf{z}_{n,t}$
+		
+		\State Workers compute \[\textbf{g}_i= (1- \rho_t)\textbf{g}_{i,t-1} + \rho_t\textbf{g}_i(\text{\boldmath}\delta_t,\textbf{y}).\]
+		\State Push $\textbf{g}_{i,t}$ to the master node.
+		\State Master node computes 
+		\[\textbf{g}_t = \frac{1}{M} \sum_{i=1}^{M} \textbf{g}_{i,t}.\]
+		\State Master node computes $\textbf{v}_t = - \varepsilon sign(\textbf{g}_t)$.
+		\State Master node computes \boldmath$\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t$ and sends it to all nodes.
+		\EndFor
+
+	\end{algorithmic}
+\end{algorithm}

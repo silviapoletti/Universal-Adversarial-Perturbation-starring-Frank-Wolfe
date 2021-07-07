@@ -1,1 +1,34 @@
 \section{Decentralized Variance-Reduced Stochastic Gradient Free Frank Wolfe}
+In this section we employ the SPIDER variance reduction technique, which is a built for dynamic tracking, while avoiding excessive querying to oracles and ultimately reducing query complexity.
+\begin{algorithm}
+	\caption{Decentralized Variance-Reduced Stochastic Gradient Free FW}\label{variance-reduced}
+	\begin{algorithmic}[1]
+		\Require Input image \boldmath$\delta$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of images $S_1$, number of function components $S_2$, total number of function component $n$, period $q$, duality gap tolerance $tol$.
+		\Ensure Universal prturbation's history.
+		
+		\State Initialize \boldmath$\delta_0 = \text{0}$.
+		\For {$t = 0, \dots, T-1$}
+		\State Each worker $i$ computes:
+		\If {$mod(t,q)=0$}
+		\State Draw {\small$S_1' = \frac{S_1d}{M}$} samples for each dimension at each worker $i$ and compute its local gradient \newline
+		{\small$ \textbf{e}_k^T\textbf{g}_i(\text{\boldmath} \delta_t) = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\textbf{x}_t + \eta\textbf{e}_k) - F_{i,j}(\textbf{x}_t) }{\eta} $} along each canonical basis vector $\textbf{e}_k$.
+		
+		\State Each worker updates $\textbf{g}_{i,t} = \textbf{g}_i(x)_t$.
+		\Else
+		\State Draw $S_2$ pairs of component functions and Gaussian random vectors $\{\textbf{z}\}$ at each worker $i$ and update
+		
+		\parbox[b]{\linewidth}{$\textbf{g}_i(x)_t = \frac{1}{|S_2|} \sum_{j \in S_2}\frac{F_{i,j}(\textbf{x}_t + \eta\textbf{e}_k)- F_{i,j}(\textbf{x}_t) }{\eta} \textbf{z}$ -\\
+			
+			$\frac{F_{i,j}(\textbf{x}_{t-1} + \eta\textbf{e}_k) - F_{i,j}(\textbf{x}_{t-1}) }{\eta} \textbf{z}$}
+				
+		\State Each worker updates 
+		\[\textbf{g}_{i,t} = \textbf{g}_i(\textbf{x}_t) \textbf{g}_{i,t-1}.\]
+		\EndIf
+		\State Each worker pushes $\textbf{g}_{i,t}$ to the master node.
+		\State Master node computes 
+		\[\textbf{g}_t = \frac{1}{M} \sum_{i=1}^{M} \textbf{g}_{i,t}.\]
+		\State Master node computes $\textbf{v}_t = - \varepsilon sign(\textbf{g}_t)$.
+		\State Master node computes \boldmath$\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t$ and sends it to all nodes.
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
