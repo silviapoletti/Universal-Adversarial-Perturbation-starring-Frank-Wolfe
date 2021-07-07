@@ -103,6 +103,7 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, T, M, d, epsilon, S
         delta_prec = None if t == 0 else delta_history[-2]
 
         for w_idx in range(0, M):
+            print("Worker: ", w_idx)
             gradient_worker[w_idx, :] = decentralized_worker_job_variance_reduced(
                 data_workers[w_idx, :, :, :, :], y, F, t, M, d, S1, S2, n, q, eta_RDSA, eta_KWSA,
                 gradient_worker[w_idx, :], delta, delta_prec)
