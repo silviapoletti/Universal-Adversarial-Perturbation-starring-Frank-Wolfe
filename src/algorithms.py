@@ -234,7 +234,7 @@ def distributed_zo_FW(data_workers, y, F, T, M, d, epsilon, m, A):
             g_bar_prec_worker_i = g_bar[i, :].copy()
 
             # g workers update
-            g_workers[i, :] = gradient_I_RDSA_worker(data_workers[i, :, :, :, :], y, m, d, c, F, delta_bar[i, :], verbose=1)
+            g_workers[i, :] = gradient_I_RDSA_worker(data_workers[i, :, :, :, :], y, F, d, m, c, delta_bar[i, :], verbose=1)
 
             G[i, :] = g_bar_prec_worker_i + g_workers[i, :] - g_prec_worker_i
 
