@@ -14,6 +14,8 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsil
     :param tol: tolerance for duality gap
     :return: universal perturbation
     """
+    # set seed:
+    np.random.seed(36)
     # starting point, x is the perturbation
     delta = np.zeros(d)  # starting point: delta_0
     delta_history = []
@@ -90,6 +92,8 @@ def decentralized_variance_reduced_zo_FW(data_workers, y, F, T, M, d, epsilon, S
 
     :return: universal perturbation's history
     """
+    # set seed:
+    np.random.seed(36)
     # starting point, x is the perturbation
     delta = np.zeros(d)  # starting point: delta_0
     delta_history = [delta]
@@ -157,7 +161,7 @@ def decentralized_worker_job_variance_reduced(data, y, F, t, M, d, S1, S2, n, q,
             e = np.zeros(d)
             e[k] = eta_KWSA
             # sampling of S1_prime images:
-            sampling_index = np.random.randint(low=0, high=data.shape[0], size=size*n)
+            sampling_index = np.random.choice(data.shape[0], size * n, False)
             sampling_images = np.take(data, sampling_index, axis=0)
             sampling_labels = y[sampling_index]
             e = np.tile(e, size)
@@ -179,7 +183,7 @@ def decentralized_worker_job_variance_reduced(data, y, F, t, M, d, S1, S2, n, q,
         eta_z = np.tile(eta_z, size)
         eta_z = eta_z.reshape((size, 28, 28, 1))
         # sampling:
-        sampling_index = np.random.randint(low=0, high=data.shape[0], size=size * n)
+        sampling_index = np.random.choice(data.shape[0], size * n, False)
         sampling_components = np.random.choice(n, S2, False)
         sampling_images = np.take(data, sampling_index, axis=0)
         sampling_labels = y[sampling_index]
@@ -211,12 +215,13 @@ def distributed_zo_FW(data_workers, y, F, T, M, d, epsilon, m, A):
 
     :return:
     """
+    # set seed:
+    np.random.seed(36)
     D = np.diag(np.sum(A, axis=0))
     L = D - A
     D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
     W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
-    np.random.seed(36)
-    # delta = np.random.uniform(low=-epsilon, high=epsilon, size=(M, d)) # initial matrix in which each row correspond to a worker initial point
+    # initialization:
     delta = np.zeros((M,d))
     delta_bar = np.zeros((M, d))
     g_workers = np.zeros((M, d))
