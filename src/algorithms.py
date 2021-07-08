@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsilon, m, tol=None):
+def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsilon, m, tol=None, verbose=0):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
@@ -26,7 +26,7 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsil
         c = 2 * m ** (1 / 2) / (d ** (3 / 2) * (t + 8) ** (1 / 3))
 
         for w_idx in range(0, M):
-            gradient_worker[w_idx, :] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, F, d, m, ro, c, gradient_worker[w_idx, :], delta)
+            gradient_worker[w_idx, :] = decentralized_worker_job(data_workers[w_idx, :, :, :, :], y, F, d, m, ro, c, gradient_worker[w_idx, :], delta, verbose)
         # wait all workers computation
         g = np.average(gradient_worker, axis=0)
         v = - epsilon * np.sign(g)
@@ -38,7 +38,7 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsil
     return delta_history
 
 
-def decentralized_worker_job(data, y, F, d, m, ro, c, g_prec, delta):
+def decentralized_worker_job(data, y, F, d, m, ro, c, g_prec, delta, verbose=0):
     """
     :param data: n images
     :param y: n labels
@@ -51,7 +51,7 @@ def decentralized_worker_job(data, y, F, d, m, ro, c, g_prec, delta):
     :param delta: perturbation
     :return: gradient
     """
-    g = gradient_I_RDSA_worker(data, y, F, d, m, c, delta)
+    g = gradient_I_RDSA_worker(data, y, F, d, m, c, delta, verbose)
 
     if not np.array_equal(g_prec, np.zeros(d)):
         g = (1 - ro) * g_prec + ro * g
