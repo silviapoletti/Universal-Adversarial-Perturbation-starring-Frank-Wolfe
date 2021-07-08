@@ -1,18 +1,18 @@
 \subsection{Decentralized Stochastic Gradient Free Frank Wolfe}
-In this section we discuss the Stochastic Gradient Free FW in a decentralized setup. In this setting we have some devices, that we call workers, connected to a master node to read, write and exchange information.\\
-In our case we have $M$ workers to which is spread the data, they compute their local gradient, using the loss function and the parameters given from I-RDSA, and send them to the master node who uses the gradients collected to return the new perturbated data.\\
-Given an input image \boldmath$\delta$, the algorithm initializes both the starting point and the gradient to a zero $d$-vector and $M \times d$ matrix, respectively. Then each worker computes its own gradient estimation based on the parameters given from I-RDSA in the following way:
+In this section we discuss the Stochastic Gradient Free FW in a decentralized setup. This setting architecture is composed of a central node, called master node, and other nodes connected to it but no to each other, called workers.
+Workers are connected to the master node to read, write and exchange information.\\
+In our case we have $M$ workers to which is spread the data, they compute their local gradient using the loss function and the parameters given from I-RDSA. Then, they send the estimated gradients to the master node who uses them to return the new perturbed data.\\
+In particular, given an input image \boldmath$\delta$, the algorithm initializes both the starting point and the gradient to a zero $d$-vector and $M \times d$ matrix, respectively. Then each worker computes its own gradient estimation based on the parameter $\rho_t$ given by I-RDSA in the following way:
 \[\textbf{g}_i= (1- \rho_t)\textbf{g}_{i,t-1} + \rho_t\textbf{g}_i(\text{\boldmath}\delta_t,\textbf{y}).\]
- When all of the workers finish their tasks, they send the results to the master node, which computes the average of the ones collected and get back the obtained value as new initial point \boldmath$\delta_{t+1}$:
-\[\text{\boldmath}\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t \]
- When all of the iterations are done, the algorithm returns the average of the gradient computation done by the master node.
+ When all of the workers finish their tasks, they send the results to the master node, which computes the average of the estimated gradients and send back the obtained value as the new initial point \boldmath$\delta_{t+1}$:
+\[\text{\boldmath}\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t, \]
+with $\gamma_t = \frac{2}{t+8}$. When all of the iterations are done, the algorithm returns the hystory of all the perturbations computed by the master node.
 
 \begin{algorithm}
-	\caption{Decentralized Stochastic Gradient Free FW}\label{decentralized}
-	\begin{algorithmic}[1]
-		\Require Input image \boldmath$\delta$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$.
-		\Ensure \boldmath$\delta^T$
-		
+	\caption{Decentralized Stochastic Gradient Free FW}\label{decentralized} 
+	 \textbf{Input} Input image \boldmath$\delta$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$.\\
+	 \textbf{Output} Universal perturbation's history.
+	\begin{algorithmic}[1]		
 		\State Initialize \boldmath$\delta_0 = \text{0}$.
 		\For {$t = 0, \dots, T-1$}
 		\State Master node computes parameters required for the computation of the I-RDSA scheme: 
