@@ -1,1 +1,32 @@
-\section{Introduction to Adversarial Attacks}
+\section{Introduction}
+\subsection{Adversarial Attacks and Universal Adversarial Perturbations}
+TODO: What are adversarial attacks?
+
+Universal perturbations are small perturbations that, when applied to the input images, are able
+to fool a state-of-the-art deep neural network classifier. These perturbations are quasi-imperceptible for humans,
+due to their small norm, and therefore they are difficult to detect. However, what makes universal perturbations special,
+is their capability to generalize well both on a large dataset and across different deep neural network architectures.
+In fact, an important property of universal perturbations is that they are image-agnostic. This means that
+they don't depend on a single image, but rather they are able to cause label estimation change for most of
+the images contained in a dataset.
+
+It is important to notice that there's no unique universal perturbation: different random shuffling of the data used
+to compute the perturbation can lead to a diverse set of universal perturbations.
+
+Furthermore, universal perturbations mostly make natural images classified with specific labels, called dominant labels.
+These dominant labels are not determined a priori, but rather they are automatically found by the algorithm that
+computes the universal perturbation. In paper \textcolor{red}{XXX}, the authors hypothesize that "these dominant labels occupy large
+regions in the image space, and therefore represent good candidate labels for fooling most natural images".
+
+Finally, although some fine-tuning strategies can be adopted to make deep neural networks more robust to adversarial
+attacks, they are not sufficient to make the classifier immune to the attacks. In fact, the fine-tuning of a classifier with universal perturbations leads to an improvement in the classification of
+perturbed images, however it is always possible to find a small universal perturbation that can fool the network.
+
+% non-convex problem
+
+% the objective is not to find the smallest perturbation that fools most of the data points,
+% but rather to find one such perturbation with sufficiently small norm
+
+% universal perturbations exploit some geometric correlations between different parts in the decision
+% boundary of the classifier
+
