@@ -22,7 +22,7 @@ for n in [5, 10]:
 delta = delta[-1]
 perturbation = np.tile(delta, data.shape[0])
 perturbation = perturbation.reshape((data.shape[0], 28, 28, 1))
-perturbated_data = data + perturbation
-perturbated_data = np.clip(perturbated_data, 0., 1.)
+perturbed_data = data + perturbation
+perturbed_data = np.clip(perturbed_data, 0., 1.)
 
-loss = lenet5.model.evaluate(perturbated_data, labels)
+loss = lenet5.model.evaluate(perturbed_data, labels)

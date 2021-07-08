@@ -39,4 +39,4 @@ delta_bar = distributed_zo_FW(data_workers, y, lenet5.negative_loss, T, M, d, ep
 np.save(f'../data/perturbations/distributed/report_distributed_delta_{T}_{m}', delta_bar)
 
 utils.plot_perturbation(delta_bar[-1, :], f'../data/img/distributed/report_distributed_delta_{T}_{m}')
-utils.plot_perturbated_img(delta_bar[-1, :], data_workers[1, 1], f'../data/img/distributed/report_perturbated_img_{T}_{m}')
+utils.plot_perturbed_img(delta_bar[-1, :], data_workers[1, 1], f'../data/img/distributed/report_perturbed_img_{T}_{m}')
