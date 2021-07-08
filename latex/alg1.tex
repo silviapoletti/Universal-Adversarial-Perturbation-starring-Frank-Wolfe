@@ -1,31 +1,29 @@
 \subsection{Decentralized Stochastic Gradient Free Frank Wolfe}
-In this section we discuss the Stochastic Gradient Free FW in a decentralized setup. This setting architecture is composed of a central node, called master node, and other nodes connected to it but no to each other, called workers.
-Workers are connected to the master node to read, write and exchange information.\\
-In our case we have $M$ workers to which is spread the data, they compute their local gradient using the loss function and the parameters given from I-RDSA. Then, they send the estimated gradients to the master node who uses them to return the new perturbed data.\\
-In particular, given an input image \boldmath$\delta$, the algorithm initializes both the starting point and the gradient to a zero $d$-vector and $M \times d$ matrix, respectively. Then each worker computes its own gradient estimation based on the parameter $\rho_t$ given by I-RDSA in the following way:
-\[\textbf{g}_i= (1- \rho_t)\textbf{g}_{i,t-1} + \rho_t\textbf{g}_i(\text{\boldmath}\delta_t,\textbf{y}).\]
- When all of the workers finish their tasks, they send the results to the master node, which computes the average of the estimated gradients and send back the obtained value as the new initial point \boldmath$\delta_{t+1}$:
-\[\text{\boldmath}\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t, \]
-with $\gamma_t = \frac{2}{t+8}$. When all of the iterations are done, the algorithm returns the hystory of all the perturbations computed by the master node.
+The decentralized architecture is composed of a central node, called master node, and other nodes connected to it but not to each other, called workers.
+The workers are connected to the master node to read, write and exchange information.\\
+In the Decentralized Stochastic Gradient Free Frank Wolfe method, the data is spread to $M$ workers and the starting point and the gradient are initialized to a null $d$-vector and a null $M \times d$ matrix, respectively.\\
+The workers compute their local gradient using the I-RDSA scheme on the loss function and then apply the smoothing scheme (3).\\
+When all the workers have finished their tasks, they send their results to the master node, which computes the average of the estimated gradients and send back the new iterate \mbox{\boldmath$ \delta$}$_{t+1}$, obtained from (5) and (6) with $\gamma_t = \frac{2}{t+8}$.\\
+When all of the iterations are done, the algorithm returns the hystory of all the perturbations computed by the master node.
 
 \begin{algorithm}
-	\caption{Decentralized Stochastic Gradient Free FW}\label{decentralized} 
-	 \textbf{Input} Input image \boldmath$\delta$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$.\\
+	\caption{Decentralized SGF FW}\label{decentralized} 
+	 \textbf{Input} Dataset images $\mathbf{x}$, labels $y$, loss function $F$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of sampled directions $m$.\\
 	 \textbf{Output} Universal perturbation's history.
 	\begin{algorithmic}[1]		
-		\State Initialize \boldmath$\delta_0 = \text{0}$.
+		\State Initialize \mbox{\boldmath$ \delta$}$_{0} = \mathbf{0}$.
 		\For {$t = 0, \dots, T-1$}
 		\State Master node computes parameters required for the computation of the I-RDSA scheme: 
 		{\scriptsize\[(\rho_t,c_t)_{I-RDSA} =\bigg(\frac{4}{\big(1+\frac{d}{m}\big)^{1/3}(t+8)^{2/3}}, \frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}\bigg)\]}
-		\State For each worker $i$ compute I-RDSA:\newline Sample $\{\textbf{z}_{n,t}\}_{n=1}^m \sim N(0, \textbf{1}_d)$ \newline
-		 $\textbf{g}_i(\text{\boldmath}\delta_t;\textbf{y}) = \frac{1}{m} \sum_{n=1}^{m} \frac{F(\text{\boldmath}\delta_t + c_t\textbf{z}_{n,t};\textbf{y}) - F(\text{\boldmath}\delta_t;\textbf{y})}{c_t}\textbf{z}_{n,t}$
+		\State For each worker $i$ compute I-RDSA:\newline Sample $\{\mathbf{z}_{j,t}\}_{j=1}^m \sim\mathcal{N}(0,\mathbb{1}_d)$ \newline
+		 $\mathbf{g}_i = \frac{1}{m} \sum_{n=1}^{m} \frac{F(\mathbf{x} + \mbox{\scriptsize\boldmath$ \delta$}_t + c_t\mathbf{z}_{j,t}, y) - F(\mathbf{x} + \mbox{\scriptsize\boldmath$ \delta$}_t, y)}{c_t}\mathbf{z}_{j,t}$
 		
-		\State Workers compute \[\textbf{g}_i= (1- \rho_t)\textbf{g}_{i,t-1} + \rho_t\textbf{g}_i(\text{\boldmath}\delta_t,\textbf{y}).\]
+		\State Workers compute \[\mathbf{g}_{i,t}= (1- \rho_t)\mathbf{g}_{i,t-1} + \rho_t\mathbf{g}_i.\]
 		\State Push $\textbf{g}_{i,t}$ to the master node.
 		\State Master node computes 
-		\[\textbf{g}_t = \frac{1}{M} \sum_{i=1}^{M} \textbf{g}_{i,t}.\]
-		\State Master node computes $\textbf{v}_t = - \varepsilon sign(\textbf{g}_t)$.
-		\State Master node computes \boldmath$\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t$ and sends it to all nodes.
+		\[\mathbf{g}_t = \frac{1}{M} \sum_{i=1}^{M} \mathbf{g}_{i,t}.\]
+		\State Master node computes $\mathbf{v}_t = - \varepsilon sign(\mathbf{g}_t)$.
+		\State Master node computes \mbox{\boldmath$ \delta$}$_t = (1-\gamma_t)\mbox{\boldmath$ \delta$}_t + \gamma_t\mathbf{v}_t$ and sends it to all nodes.
 		\EndFor
 
 	\end{algorithmic}
