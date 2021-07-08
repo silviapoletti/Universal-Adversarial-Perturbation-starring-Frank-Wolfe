@@ -16,7 +16,7 @@ When all of the iterations are done, the algorithm returns the hystory of all th
 		\State Master node computes parameters required for the computation of the I-RDSA scheme: 
 		{\scriptsize\[(\rho_t,c_t)_{I-RDSA} =\bigg(\frac{4}{\big(1+\frac{d}{m}\big)^{1/3}(t+8)^{2/3}}, \frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}\bigg)\]}
 		\State For each worker $i$ compute I-RDSA:\newline Sample $\{\mathbf{z}_{j,t}\}_{j=1}^m \sim\mathcal{N}(0,\mathbb{1}_d)$ \newline
-		 $\mathbf{g}_i = \frac{1}{m} \sum_{j=1}^{m} \frac{F(\mathbf{x} + \mbox{\scriptsize\boldmath$ \delta$}_t + c_t\mathbf{z}_{j,t}, y) - F(\mathbf{x} + \mbox{\scriptsize\boldmath$ \delta$}_t, y)}{c_t}\mathbf{z}_{j,t}$
+		 \[\mathbf{g}_i = \frac{1}{m} \sum_{j=1}^{m} \frac{F(\mathbf{x} + \mbox{\scriptsize\boldmath$ \delta$}_t + c_t\mathbf{z}_{j,t}, y) - F(\mathbf{x} + \mbox{\scriptsize\boldmath$ \delta$}_t, y)}{c_t}\mathbf{z}_{j,t}\]
 		
 		\State Workers compute \[\mathbf{g}_{i,t}= (1- \rho_t)\mathbf{g}_{i,t-1} + \rho_t\mathbf{g}_i.\]
 		\State Push $\textbf{g}_{i,t}$ to the master node.
