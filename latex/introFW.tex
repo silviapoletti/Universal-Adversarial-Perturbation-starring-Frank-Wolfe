@@ -1,9 +1,53 @@
-\section{Gradient Free Frank Wolfe}
-Gradient free optimization algorithms find application in settings where the explicit closed form of the loss function is not available or the gradient evaluation is computationally prohibitive. A prime example is black-box adversarial attacks on neural networks, where only the model output is known, while the architecture and weights remain unknown. In fact, gradient free methods exploit just zeroth-order oracle calls (i.e. loss function evaluations) to solve an optimization problem.\\
-In particular, this report focuses on zeroth-order Frank Wolfe algorithms for constrained optimization problems. Unlike the Projected Gradient method that requires expensive projection operations, the Frank Wolfe framework provides computational simplicity by making use of instances of linear minimization. \\
-Considering the application of interest, that is black-box adversarial attacks, a "good enough" feasible solution is often adequate. Therefore, the use of biased gradient estimates obtained from zeroth-order information is suitable for performing this task.\\
+\section{Gradient Free Stochastic Frank Wolfe}
+Gradient free optimization algorithms find application in settings where the explicit closed form of the loss function is not available or the gradient evaluation is computationally prohibitive. A prime example concerns black-box adversarial attacks on neural networks, where only the model output is known, while the architecture and weights remain unknown. In fact, gradient free methods exploit just zeroth-order oracle calls (i.e. loss function evaluations) to solve an optimization problem.\\
+In particular, this report focuses on zeroth-order Frank Wolfe algorithms for constrained optimization problems. Unlike the Projected Gradient Descent (PGD) method that requires expensive projection operations, the Frank Wolfe framework provides computational simplicity by making use of instances of linear minimization. Moreover, at each iteration, a naive zeroth-order analog of PGD takes a step along the estimated gradient aggressively before applying projection, and since this trajectory might not be a descent direction then the method could suffer from slow convergence.\\
+Considering the application of interest, that is black-box adversarial attacks, a "good enough" feasible solution is often adequate. Therefore, the use of gradient estimates obtained from zeroth-order information is suitable for performing this task.\\
 
-1) SPIEGARE ZEROTH-ORDER OPTIMIZATION + STOCHASTIC AND CONSTRAINED OPTIMIZATION\\
-2) SPIEGARE FW FROM 1ST ORDER TO 0TH ORDER\\
+Let's consider the constrained stochastic optimization problem defined as
+\begin{flalign}
+	\nonumber
+	\mbox{\boldmath$ \delta$}' &= \argmax_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\epsilon} \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}}[F(\mathbf{x}+\mbox{\boldmath$ \delta$},y)]\\
+	& = \argmin_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\epsilon} \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}}[-F(\mathbf{x}+\mbox{\boldmath$ \delta$},y)]
+\end{flalign}
+where the couples $(\mathbf{x},y)$ represent the labeled data given in input to the classifier and $F(\mathbf{x},y)$ is the corresponding loss function. This optimization problem formalizes the procedure to generate a universal adversarial perturbation that maximizes the loss function on the convex set defined by the infinity norm $\displaystyle \lVert \mbox{\boldmath$ \delta$}\rVert_{\infty} = \max_{i}|\delta_i|$.\\ According to this formulation, the adversarial examples are designed as to lead to misclassification and the constraint ensures a minimal visual distortion to the human eyes. \\
+In this work, zeroth-order optimization is carried out by applying the following biased gradient approximation schemes for $\nabla F(\mathbf{x}_t,y)$:
+\begin{itemize}
+	\item \textbf{KWSA}:
+	\begin{center}
+		${\displaystyle\mathbf{g}(\mathbf{x}_t,y) = \sum^{d}_{i=1}\frac{F(\mathbf{x}_t + c_t\mathbf{e}_i,y)-F(\mathbf{x}_t,y)}{c_t}\mathbf{e}_i}$
+	\end{center}
+	\item \textbf{RDSA}:
+	\begin{center}
+		${\displaystyle\mathbf{g}(\mathbf{x}_t,y) = \frac{F(\mathbf{x}_t + c_t\mathbf{z}_t,y)-F(\mathbf{x}_t,y)}{c_t}\mathbf{z}_t}$
+	\end{center}
+	\item \textbf{I-RDSA}:
+	\begin{center}
+		${\displaystyle\mathbf{g}(\mathbf{x}_t,y) = \frac{1}{m}\sum^{m}_{i=1}\frac{F(\mathbf{x}_t + c_t\mathbf{z}_{i,t},y)-F(\mathbf{x}_t,y)}{c_t}\mathbf{z}_{i,t}}$
+	\end{center}
+\end{itemize}
+where $d$ is the dimension of the optimization problem at hand, $\{\mathbf{e}_i\}_{i=1}^d$ are the canonical basis vectors and $\{\mathbf{z}_{i,t}\}_{i=1}^m\sim\mathit{N}(0,\mathbb{I}_d)$ are random vectors sampled from the multivariate standard normal distribution.\\
+It's easy to see that KWSA is the most query hungry scheme but at the same time is very accurate, while RDSA and I-RDSA are potentially inaccurate but less computationally demanding, and since $m$ is chosen to be independent of $d$ then the query complexity doesn't scale with dimension.\\
+Finally, $c_t$ is a time-decaying sequence such that the aforementioned gradient estimators tend to be unbiased for $c_t \rightarrow 0$.\\
+
+In the zeroth-order stochastic Frank Wolfe framework, the gradient estimate $\mathbf{g}(\mathbf{x}_t,y)$ injects addictional variance to the stochastic counterpart $\nabla F(\mathbf{x}_t,y)$ of the objective function's ture gradient $\nabla f(\mathbf{x}_{t},y)$, potentially leading to divergence and exacerbating the fact that the Linear Minimization Oracle (LMO)
+\begin{flalign}
+	\nonumber
+	&\mathbf{v}_t = \argmin_{\mathbf{s}\in\mathit{C}}\langle \mathbf{g}(\mathbf{x}_t,y),\mathbf{s}\rangle\\
+	&\mathbf{x}_{t+1} = (1-\gamma_{t+1})\mathbf{x}_t + \gamma_{t+1}\mathbf{v}_t ,	
+\end{flalign}
+is constrained to hold just in expectation.\\ 
+To counter this issue, the following gradient smoothing scheme is applied:
+\begin{flalign}
+	\nonumber
+	&\mathbf{d}_{t} = (1-\rho_t)\mathbf{d}_{t-1} + \rho_t\mathbf{g}(\mathbf{x}_t,y)\\
+	\nonumber
+	&\mathbf{v}_t = \argmin_{\mathbf{s}\in\mathit{C}}\langle \mathbf{d}_t,\mathbf{s}\rangle\\
+	&\mathbf{x}_{t+1} = (1-\gamma_{t+1})\mathbf{x}_t + \gamma_{t+1}\mathbf{v}_t	
+\end{flalign}
+where $\rho_t$ is a time-decaying sequence and $\mathbb{E}[\lVert\mathbf{d}_{t}-\nabla f(\mathbf{x}_{t},y) \rVert^2]$ can be proved to go to zero asymptotically.\\
+In particular, given the definition of the convex set $\mathit{C}$ as the constraint in (1), the closed-form solution of the LMO is 
+\begin{equation}
+	\mathbf{v}_t = \argmin_{\lVert \mathbf{s}\rVert_{\infty}\leq\epsilon}\langle \mathbf{d}_t,\mathbf{s}\rangle= -\epsilon \:sign(\mathbf{d}_{t})	
+\end{equation}
+
 3) INTRODURRE IL CONCETTO DI DECENTRALIZED E DISTRIBUTED SETTINGS\\
-
