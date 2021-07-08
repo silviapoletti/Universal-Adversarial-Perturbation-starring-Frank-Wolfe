@@ -1,4 +1,4 @@
-\section{Decentralized Stochastic Gradient Free Frank Wolfe}
+\subsection{Decentralized Stochastic Gradient Free Frank Wolfe}
 In this section we discuss the Stochastic Gradient Free FW in a decentralized setup. In this setting we have some devices, that we call workers, connected to a master node to read, write and exchange information.\\
 In our case we have $M$ workers to which is spread the data, they compute their local gradient, using the loss function and the parameters given from I-RDSA, and send them to the master node who uses the gradients collected to return the new perturbated data.\\
 Given an input image \boldmath$\delta$, the algorithm initializes both the starting point and the gradient to a zero $d$-vector and $M \times d$ matrix, respectively. Then each worker computes its own gradient estimation based on the parameters given from I-RDSA in the following way:
