@@ -1,4 +1,4 @@
-\subsection{Distributed Stochastic Gradient Free Frank Wolfe}
+\subsection{Distributed Stochastic Gradient Free Frank-Wolfe}
 In this section we discuss the Distributed Stochastic Grandient Free FW in a distributed setup. In this setting we have that the $M$ workers do not have a central coordinator, instead they exchange information in a peer-to-peer manner. The internode comunication network used by the workers is modeled as an undirected simple connective graph $G=(V,E)$, with $V=\{1, \dots, M\}$ the set of nodes and $E$ the set of comunication links. Each node comunicates and exchange information with its own neighbors, and given a node $n$ we indicate with $\Omega_n = \{l \in V | (n,l)\in E\}$ its neighborhood. Node $n$ has degree $d_n = |\Omega_n|$. Also, we use the $M \times M$ adjacency matrix $A=[A_{ij}]$ to describe the edges of the graph $G$: we have $A_{ij}=1$ if $(i,j) \in E$, $A_{ij}=0$ otherwise. We define the diagonal matrix $D=(d_1 \dots d_M)$ in order to compute the graph Laplacian $L=D-A$. The Normalized Laplacian of $L$ is define to be the matrix
 \[
 \mathcal{L}(u,v)=
