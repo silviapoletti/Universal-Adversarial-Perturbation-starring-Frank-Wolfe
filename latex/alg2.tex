@@ -1,12 +1,12 @@
 \subsection{Decentralized Variance-Reduced Stochastic Gradient Free Frank Wolfe}
 This section analyzes the SPIDER variance reduction technique, which is built for dynamic tracking, while avoiding excessive querying to oracles and ultimately reducing query complexity.\\
 At the beginning of Algorithm \ref{variance-reduced} we initialize our initial perturbation to a zero $d$ vector \boldmath$\delta_0$ and denote $q \in \mathbb{N}_{+}$ as a period parameter. At the beginning of each period, i.e. $mod(q,n)=0$, each worker employ KWSA for the computation of its own gradient estimation along the canonical basis vector $e_k$, with $k=1, \dots, d$, using $\eta = \frac{2}{d^{1/2}(t+8)^{1/3}}$. In all other cases, the worker selected a mini-batch $ S'$ of local component functions and use the RDSA to estimate and update the gradients. In particular, $S_2$ pairs of component functions are chosen for the computation of the gradient estimation
-\[\textbf{e}_k^T\textbf{g}_i(\text{\boldmath} \delta_t) = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\textbf{x}_t + \eta\textbf{e}_k) - F_{i,j}(\textbf{x}_t) }{\eta},\]
+\[\mathbf{e}_k^T\mathbf{g}_i(\text{\boldmath} \delta_t) = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\mathbf{x}_t + \eta\mathbf{e}_k) - F_{i,j}(\mathbf{x}_t) }{\eta},\]
 which is then sent to the master node. While running RDSA we use $\eta = \frac{2}{d^{3/2}(t+8)^{1/3}}$.\\
 Then, the master node computes the average of the estimated gradients and calculates the new perturbation. Algorithm \ref{variance-reduced} returns all the perturbations computed by the master node.
 \begin{algorithm}
 	\caption{Decentralized Variance-Reduced Stochastic Gradient Free FW}\label{variance-reduced}
-	\textbf{Input} Input image \boldmath$\delta$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of images $S_1$, subset of component functions $S_2$, total number of component functions $n$, period $q$.\\
+	\textbf{Input} Batches of images $\{\mathbf{x}_i\}_{i=1}^M$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of images $S_1$, subset of component functions $S_2$, total number of component functions $n$, period $q$.\\
 	\textbf{Output} Universal perturbation's history.
 	\begin{algorithmic}[1]		
 		\State Initialize \boldmath$\delta_0 = \text{0}$.
@@ -14,24 +14,26 @@ Then, the master node computes the average of the estimated gradients and calcul
 		\State Each worker $i$ computes:
 		\If {$mod(t,q)=0$}
 		\State Draw {\small$S_1' = \frac{S_1d}{M}$} samples for each dimension at each worker $i$ and compute its local gradient \newline
-		{\small$ \textbf{e}_k^T\textbf{g}_i(\text{\boldmath} \delta_t) = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\textbf{x}_t + \eta\textbf{e}_k) - F_{i,j}(\textbf{x}_t) }{\eta} $} along each canonical basis vector $\textbf{e}_k$.
+		{\small$ \mathbf{e}_k^T\mathbf{g}_i(\text{\boldmath} \delta_t) = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\mathbf{x}_t + \eta\mathbf{e}_k) - F_{i,j}(\mathbf{x}_t) }{\eta} $} along each canonical basis vector $\mathbf{e}_k$.
 		
-		\State Each worker updates $\textbf{g}_{i,t} = \textbf{g}_i(x)_t$.
+		\State Each worker updates $\mathbf{g}_{i,t} = \mathbf{g}_i(x)_t$.
 		\Else
-		\State Draw $S_2$ pairs of component functions and Gaussian random vectors $\{\textbf{z}\}$ at each worker $i$ and update
+		\State Draw $S_2$ pairs of component functions and Gaussian random vectors $\{\mathbf{z}\}$ at each worker $i$ and update
 		
-		\parbox[b]{\linewidth}{$\textbf{g}_i(x)_t = \frac{1}{|S_2|} \sum_{j \in S_2}\frac{F_{i,j}(\textbf{x}_t + \eta\textbf{e}_k)- F_{i,j}(\textbf{x}_t) }{\eta} \textbf{z}$ -\\
+		\parbox[b]{\linewidth}{$\mathbf{g}_i(x)_t = \frac{1}{|S_2|} \sum_{j \in S_2}\frac{F_{i,j}(\mathbf{x}_t + \eta\mathbf{e}_k)- F_{i,j}(\mathbf{x}_t) }{\eta} \mathbf{z}$ -\\
 			
-			$\frac{F_{i,j}(\textbf{x}_{t-1} + \eta\textbf{e}_k) - F_{i,j}(\textbf{x}_{t-1}) }{\eta} \textbf{z}$}
+			$\frac{F_{i,j}(\mathbf{x}_{t-1} + \eta\mathbf{e}_k) - F_{i,j}(\mathbf{x}_{t-1}) }{\eta} \mathbf{z}$}
 				
 		\State Each worker updates 
-		\[\textbf{g}_{i,t} = \textbf{g}_i(\textbf{x}_t) \textbf{g}_{i,t-1}.\]
+		\begin{equation*}
+			\mathbf{g}_{i,t} = \mathbf{g}_i(\mathbf{x}_t) +  \mathbf{g}_{i,t-1}.
+		\end{equation*}
 		\EndIf
-		\State Each worker pushes $\textbf{g}_{i,t}$ to the master node.
+		\State Each worker pushes $\mathbf{g}_{i,t}$ to the master node.
 		\State Master node computes 
-		\[\textbf{g}_t = \frac{1}{M} \sum_{i=1}^{M} \textbf{g}_{i,t}.\]
-		\State Master node computes $\textbf{v}_t = - \varepsilon sign(\textbf{g}_t)$.
-		\State Master node computes \boldmath$\delta_{t+1} = (1-\gamma_t)\text{\boldmath}\delta_t + \gamma_t\textbf{v}_t$ and sends it to all nodes.
+		\[\mathbf{g}_t = \frac{1}{M} \sum_{i=1}^{M} \mathbf{g}_{i,t}.\]
+		\State Master node computes $\mathbf{v}_t = - \varepsilon sign(\mathbf{g}_t)$.
+		\State Master node computes \mbox{\boldmath$ \delta$}$_{t+1} = (1-\gamma_t)\mbox{\boldmath$ \delta$}_t + \gamma_t\mathbf{v}_t$ and sends it to all nodes.
 		\EndFor
 	\end{algorithmic}
 \end{algorithm}

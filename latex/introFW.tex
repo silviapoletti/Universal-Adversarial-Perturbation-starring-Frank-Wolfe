@@ -30,7 +30,7 @@ where $d$ is the dimension of the optimization problem at hand, $\{\mathbf{e}_i\
 It's easy to see that KWSA is the most query hungry scheme but at the same time is very accurate, while RDSA and I-RDSA are potentially inaccurate but less computationally demanding, and since $m$ is chosen to be independent of $d$ then the query complexity doesn't scale with dimension.\\
 Finally, $c_t$ is a time-decaying sequence such that the aforementioned gradient estimators tend to be unbiased for $c_t \rightarrow 0$.\\
 
-In the zeroth-order stochastic Frank Wolfe framework, the gradient estimate $\mathbf{g}(\mathbf{x}_t,y)$ injects addictional variance to the stochastic counterpart $\nabla F(\mathbf{x}_t,y)$ of the objective function's ture gradient $\nabla f(\mathbf{x}_{t},y)$, potentially leading to divergence and exacerbating the fact that the Linear Minimization Oracle (LMO)
+In the zeroth-order stochastic Frank Wolfe framework, the gradient estimate $\mathbf{g}(\mathbf{x}_t,y)$ injects addictional variance to the stochastic counterpart $\nabla F(\mathbf{x}_t,y)$ of the objective function's true gradient $\nabla f(\mathbf{x}_{t},y)$, potentially leading to divergence and exacerbating the fact that the Linear Minimization Oracle (LMO)
 \begin{equation}
 	\mathbf{v}_t = \argmin_{\mathbf{s}\in\mathit{C}}\langle \mathbf{g}(\mathbf{x}_t,y),\mathbf{s}\rangle	
 \end{equation}

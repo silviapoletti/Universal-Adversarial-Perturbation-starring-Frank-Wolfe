@@ -10,10 +10,10 @@ In this section we discuss the Distributed Stochastic Grandient Free FW in a dis
 \end{cases}
 \]
 We can write $\mathcal{L} = D^{-1/2}LD^{-1/2}$, with the convention that $D^{-1}(v,v) = 0$ if $d_v=0$. The Laplacian $\mathcal{L}$ is used to compute the weghted matrix $W = \mathbb{1}- \mathcal{L}$.\\
-On the contrary of the previous algorithm, we initialize the perturbation \boldmath$\delta_0$ as a $\mathbb{0}_{M \times d}$ matrix, rather than a vector, because in a distributed setting the nodes exchange information with their neighbors \textcolor{orange}{and with a master node, in teoria non ce un master node. non ho ben capito, o ho frainteso}. \textcolor{blue}{This matrix simplifies the connections between them}. At every time instant $t$ in Algorithm \ref{distributed}, an agent $i$ exchange its current iterate with its neighbors and average the iterates as follows:
+On the contrary of the previous algorithm, we initialize the perturbation \boldmath$\delta_0$ as a $\mathbb{0}_{M \times d}$ matrix, rather than a vector, because in a distributed setting the nodes exchange information with their neighbors. \textcolor{blue}{This matrix simplifies the connections between them}. At every time instant $t$ in Algorithm \ref{distributed}, an agent $i$ exchange its current iterate with its neighbors and average the iterates as follows:
 \[\bar{\text{\boldmath}\delta}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\text{\boldmath}\delta_t^i.\]
 After this, each worker $i$ use I-RDSA to compute its local gradient estimation $g_t^i$, for $i= 1, \dots, M$, using $c_t = \frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}$. When all of them are calculated, they are collected as follow:
-\[ \bar{\textbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\textbf{G}_t^j.\]
+\[ \bar{\mathbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\mathbf{G}_t^j.\]
 After the update, the algorithm computes the Frank-Wolfe step, calculating the new iterate \boldmath$\delta_{t+1}^i$ using $\gamma_t= t^{-1/2}$ \textcolor{blue}{as suggested from Sahu's paper for non convex function}.\\
 At the end of all the iterations, the average of the perturbations is returned.\\
 
@@ -21,24 +21,24 @@ A distributed FW algorithm requires two round of communication: one for the iter
 The performance of Algorithm \ref{distributed} depends on how well the averaged iterates and the averaged gradient estimates are tracked across the network.
 \begin{algorithm}
 	\caption{Distributed Stochastic Gradient Free FW}\label{distributed}
-	\textbf{Input} Input image \boldmath$\delta_0$, labels $y$, Loss Function $F(x;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$, adjacency matrix $A$.\\
+	\textbf{Input} Batches of images $\{\mathbf{x}_i\}_{i=1}^M$, labels $y$, Loss Function $F(x;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$, adjacency matrix $A$.\\
 	\textbf{Output} Average perturbations.
 	\begin{algorithmic}[1]		
-		\State Initialize \boldmath$\delta_0^i = \text{0}$ for $i=1,\dots, M$.
+		\State Initialize \boldmath$\delta_0^i = \mathbf{0}$ for $i=1,\dots, M$.
 		\For {$t = 1, \dots, T$}
 		\State Approximate the average iterate: \newline
 		\[\bar{\text{\boldmath}\delta}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\text{\boldmath}\delta_t^i\]
 		
 		\State At each node $i$, employ I-RDSA to estimate the gradient 
-		$\textbf{g}_t^i = \sum_{j=1}^{d} \frac{F(\bar{\text{\boldmath}\delta}_t^i + c_t\textbf{e}_j) - F(\bar{\text{\boldmath}\delta}_t^i)}{c_t}\textbf{e}_j$.
+		$\mathbf{g}_t^i = \sum_{j=1}^{d} \frac{F(\bar{\textbf{x}}_t^i + c_t\mathbf{e}_j) - F(\bar{\textbf{x}}_t^i)}{c_t}\mathbf{e}_j$.
 		
 		\State Approximate the average gradient:
-		\[ \textbf{G}_t^i = \bar{\textbf{g}}_{t-1}^i + \textbf{g}_t^i - \textbf{g}_{t-1}^i \]
-		\[ \bar{\textbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\textbf{G}_t^j  \]
+		\[ \mathbf{G}_t^i = \bar{\mathbf{g}}_{t-1}^i + \mathbf{g}_t^i - \mathbf{g}_{t-1}^i \]
+		\[ \bar{\mathbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\mathbf{G}_t^j  \]
 		
-		\State Each worker computes $\textbf{v}_t = - \varepsilon sign(\textbf{g}_t)$.
+		\State Each worker computes $\mathbf{v}_t = - \varepsilon sign(\mathbf{g}_t)$.
 		\State \textit{Frank-Wolfe Step}: update
-		\[\text{\boldmath}\delta_{t+1}^i \leftarrow (1-\gamma_t)\bar{\textbf{x}}_t^i + \gamma_t\textbf{v}_t^i\]
+		\[\text{\boldmath}\delta_{t+1}^i \leftarrow (1-\gamma_t)\bar{\mathbf{x}}_t^i + \gamma_t\mathbf{v}_t^i\]
 		for all worker $i=1, \dots, M$.
 		\EndFor
 		
