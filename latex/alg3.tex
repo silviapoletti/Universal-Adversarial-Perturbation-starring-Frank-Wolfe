@@ -1,46 +1,42 @@
 \subsection{Distributed Stochastic Gradient Free Frank-Wolfe}
-This section concerns the discussion of the Distributed Stochastic Grandient Free Frank-Wolfe method for the constraint optimization problem (7) in a distributed setup. In this setting we have that the $M$ workers do not have a central coordinator, instead they exchange information in a peer-to-peer manner. The internode comunication network used by the workers is modeled as an undirected simple connective graph $G=(V,E)$, with $V=\{1, \dots, M\}$ the set of nodes and $E$ the set of comunication links. Each node comunicates and exchange information with its own neighbors, and given a node $n$ we indicate with $\Omega_n = \{l \in V | (n,l)\in E\}$ its neighborhood. Node $n$ has degree $d_n = |\Omega_n|$. Also, we use the $M \times M$ adjacency matrix $A=[A_{ij}]$ to describe the edges of the graph $G$: we have $A_{ij}=1$ if $(i,j) \in E$, $A_{ij}=0$ otherwise. We define the diagonal matrix $D=(d_1 \dots d_M)$ in order to compute the graph Laplacian $L=D-A$. The Normalized Laplacian of $L$ is define to be the matrix
+This section concerns the discussion of the Distributed Stochastic Grandient Free Frank-Wolfe method implemented in Algorithm 3 for the constraint optimization problem (7) in a distributed setup in which the $M$ workers do not have a central coordinator, instead they exchange information in a peer-to-peer manner. The internode communication network used by the workers is modeled as an undirected simply connected graph $G=(V,E)$, with $V=\{1, \dots, M\}$ the set of nodes and $E$ the set of comunication links. Each node communicates and exchanges information with its own neighbors. Given a node $n$, the set $\Omega_n = \{l \in V | (n,l)\in E\}$ indicates its neighborhood and $d_n = |\Omega_n|$ indicates its degree.\\ The $M \times M$ adjacency matrix $\mathbf{A}=[A_{ij}]$ describes the edges of the graph $G$: $A_{ij}=1$ if $(i,j) \in E$ and $A_{ij}=0$ otherwise. The diagonal matrix $\mathbf{D}=diag(d_1 \dots d_M)$ is used to compute the graph Laplacian $\mathbf{L}=\mathbf{D}-\mathbf{A}$. The normalized Laplacian $\mathbfcal{L} = [\mathcal{L}_{ij}]$ is define to be the matrix
 \[
-\mathcal{L}(u,v)=
+\mathcal{L}_{ij}=
 \begin{cases}
-	1 & \text{if $u=v$ and }d_v\ne0, \\
-	-\frac{1}{\sqrt{d_ud_v}} & \text{if $u$ and $v$ are adjacent,}\\
+	1 & \text{if $i=j$ and }d_i\ne0, \\
+	-\frac{1}{\sqrt{d_id_j}} & \text{if $i$ and $j$ are adjacent,}\\
 	0 & \text{otherwise.}
 	
 \end{cases}
 \]
-We can write $\mathcal{L} = D^{-1/2}LD^{-1/2}$, with the convention that $D^{-1}(v,v) = 0$ if $d_v=0$. The Laplacian $\mathcal{L}$ is used to compute the weghted matrix $W = \mathbb{1}- \mathcal{L}$.\\
-On the contrary of the previous algorithm, we initialize the perturbation \boldmath$\delta_0$ as a $\mathbb{0}_{M \times d}$ matrix, rather than a vector, because in a distributed setting the nodes exchange information with their neighbors. \textcolor{blue}{This matrix simplifies the connections between them}. At every time instant $t$ in Algorithm \ref{distributed}, an agent $i$ exchange its current iterate with its neighbors and average the iterates as follows:
-\[\bar{\text{\boldmath}\delta}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\text{\boldmath}\delta_t^i.\]
-After this, each worker $i$ use I-RDSA to compute its local gradient estimation $g_t^i$, for $i= 1, \dots, M$, using $c_t = \frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}$. When all of them are calculated, they are collected as follow:
-\[ \bar{\mathbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\mathbf{G}_t^j.\]
-After the update, the algorithm computes the Frank-Wolfe step, calculating the new iterate \boldmath$\delta_{t+1}^i$ using $\gamma_t= t^{-1/2}$ \textcolor{blue}{as suggested from Sahu's paper for non convex function}.\\
-At the end of all the iterations, the average of the perturbations is returned.\\
-
-A distributed FW algorithm requires two round of communication: one for the iterate and one for the gradient estimate.\\
-The performance of Algorithm \ref{distributed} depends on how well the averaged iterates and the averaged gradient estimates are tracked across the network.
+We can write $\mathbfcal{L} = \mathbf{D}^{-1/2}\mathbf{L}\mathbf{D}^{-1/2}$. The normalized Laplacian $\mathbfcal{L}$ is used to compute the weghted matrix $\mathbf{W} = \mathbb{1}- \mathbfcal{L}$.\\
+Unlike the previous algorithms, the perturbation \mbox{\boldmath$ \delta$}$_0$ is initialized as a null $M \times d$ matrix, rather than a vector: this matrix is given in input to each worker, which only considers the rows corresponding to the perturbations computed by its neighbors. This trick simplifies the distributed architecture, without changing the functioning of the algorithm.\\
+At every iteration, each worker $i$ exchanges its current iterate with its neighbors and averages the received iterates. Then, each worker $i$ applies the I-RDSA scheme to compute its local gradient estimation $\mathbf{g}_t^i$ and exchanges with the neighbors the vector $\mathbf{G}_t^i$, which is an averaged version of the gradient. Finally, when all the $\mathbf{G}_t^i$ have been calculated, they are involved in a weighted sum computed by each worker.\\
+For what said until now, the implementation requires two round of communication: one for the iterates $\bar{\mathbf{x}}_t^i$ and one for the gradients $\bar{\mathbf{g}}_t^i$. The performance depends on how well these vectors are tracked across the network.\\
+At the end of the t-th iteration, each worker computes the Frank-Wolfe update of the iterate \mbox{\boldmath$ \delta$}$_{t+1}^i$ using (5) on $\bar{\mathbf{g}}_t^i$ and (6) on $\bar{\mathbf{x}}_t^i$ with $\gamma_t = t^{-1/2}$.\\
 \begin{algorithm}
-	\caption{Distributed Stochastic Gradient Free FW}\label{distributed}
-	\textbf{Input} Batches of images $\{\mathbf{x}_i\}_{i=1}^M$, labels $y$, Loss Function $F(x;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of directions $m$, adjacency matrix $A$.\\
-	\textbf{Output} Average perturbations.
+	\caption{Distributed SGF FW}\label{distributed}
+	\textbf{Input} Batches of images $\{\mathbf{x}_i\}_{i=1}^M$, batches of labels $\{\mathbf{y}_i\}_{i=1}^M$, loss function $F$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of sampled directions $m$, adjacency matrix $\mathbf{A}$, weight matrix $\mathbf{W}$.\\
+	\textbf{Output} $\bar{\mbox{\boldmath$ \delta$}}_T^i\;\;\forall i \in \{1\dots M\}$
 	\begin{algorithmic}[1]		
-		\State Initialize \boldmath$\delta_0^i = \mathbf{0}$ for $i=1,\dots, M$.
+		\State For $i=1,\dots, M$ initialize \mbox{\boldmath$ \delta$}$_0^i =\mathbf{0} $ and $\bar{\mathbf{g}}_0^i = \mathbf{0}$
 		\For {$t = 1, \dots, T$}
-		\State Approximate the average iterate: \newline
-		\[\bar{\text{\boldmath}\delta}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\text{\boldmath}\delta_t^i\]
+		\State In the first round of communication, each worker $i$ approximates the average iterate: \newline
+		\[\bar{\mbox{\boldmath$ \delta$}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\mbox{\boldmath$ \delta$}_t^i\]
+		\State Each worker $i$ computes the I-RDSA scheme:\newline 
+		Sample $\{\mathbf{z}_{j,t}\}_{j=1}^m \sim\mathcal{N}(0,\mathbb{1}_d)$ \newline
+		\[\mathbf{g}_t^i = \frac{1}{m} \sum_{j=1}^{m} \frac{F(\mathbf{x}_i + \mbox{\boldmath$ \delta$}_t + c_t\mathbf{z}_{j,t}, \mathbf{y}_i) - F(\mathbf{x}_i + \mbox{\scriptsize\boldmath$ \delta$}_t, \mathbf{y}_i)}{c_t}\mathbf{z}_{j,t}\]
 		
-		\State At each node $i$, employ I-RDSA to estimate the gradient 
-		$\mathbf{g}_t^i = \sum_{j=1}^{d} \frac{F(\bar{\textbf{x}}_t^i + c_t\mathbf{e}_j) - F(\bar{\textbf{x}}_t^i)}{c_t}\mathbf{e}_j$.
-		
-		\State Approximate the average gradient:
+		\State  Each worker $i$ computes:
 		\[ \mathbf{G}_t^i = \bar{\mathbf{g}}_{t-1}^i + \mathbf{g}_t^i - \mathbf{g}_{t-1}^i \]
+		\State In the second round of communication, each worker $i$ approximates the average gradient:
 		\[ \bar{\mathbf{g}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\mathbf{G}_t^j  \]
 		
-		\State Each worker computes $\mathbf{v}_t = - \varepsilon sign(\mathbf{g}_t)$.
-		\State \textit{Frank-Wolfe Step}: update
-		\[\text{\boldmath}\delta_{t+1}^i \leftarrow (1-\gamma_t)\bar{\mathbf{x}}_t^i + \gamma_t\mathbf{v}_t^i\]
-		for all worker $i=1, \dots, M$.
+		\State Each worker $i$ computes $\mathbf{v}_t^i = - \varepsilon sign(\bar{\mathbf{g}}^i_t)$.
+		\State Each worker $i$ updates:
+		\[\mbox{\boldmath$ \delta$}_{t+1}^i \leftarrow (1-\gamma_t)\bar{\mbox{\boldmath$ \delta$}}_t^i + \gamma_t\mathbf{v}_t^i\]
 		\EndFor
 		
 	\end{algorithmic}
 \end{algorithm}
+ using $c_t = \frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}$

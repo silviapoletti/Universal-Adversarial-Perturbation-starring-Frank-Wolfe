@@ -4,7 +4,7 @@ In this section the goal is to solve another special case of (1), that is
 	\mbox{\boldmath$ \delta$}' = \argmin_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\varepsilon} \sum_{i=1}^M \sum_{j=1}^n \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}_{i,j}}[- F_{i,j}(\mathbf{x}+\mbox{\boldmath$ \delta$},y)].
 \end{equation}
 The implementation takes into account the SPIDER variance reduction technique, which is built for dynamic tracking, while avoiding excessive querying to oracles and ultimately reducing query complexity.\\
-In the Decentralized Variance-Reduced Stochastic Gradient Free Frank-Wolfe method,
+In the Decentralized Variance-Reduced Stochastic Gradient Free Frank-Wolfe method implemented in Algorithm 2,
 at the beginning of each period, that is when $mod(t,q)=0$ with period parameter $q \in \mathbb{N}_{+}$, each worker employs the KWSA scheme for the computation of its gradient estimation. In all the other cases, each worker selects a mini-batch of local component functions $\{F_{i,j}\}_{j\in S_2}$ and uses the RDSA scheme to estimate and update its gradient. Then, the master node computes the average of the received estimated gradients and calculates the new perturbation using (6) with $\gamma_t = \frac{2}{t+8}$.\\
 For what concerns the data, each worker receives the same amount of images (selected to be balanced with respect to the ten classes) and the corresponding labels from the dataset. In particular, the same image is not given to different workers. For both the KWSA and the RDSA schemes, each worker samples a batch of $\frac{S_1}{M}$ images, from the ones received. For the KWSA scheme, this sampling is done $d$ times, one for each component of the gradient.  
 \begin{algorithm}
