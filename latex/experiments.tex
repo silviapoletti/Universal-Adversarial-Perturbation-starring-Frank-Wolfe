@@ -7,7 +7,7 @@ For semplicity, all the algorithms introduced in the previous section have been 
 
 Again, for semplicity, the algorithms do not involve a normalization tecnique for the perturbed images and therefore normalization has been applied only after the computation of the universal adversarial perturbation, that is just before the testing of LeNet5. A possible improvement could be to consider the Box constraint described in \cite{A1}, section V.B.\\
 
-In addition, a key concept of the Frank-Wolfe theory is the duality gap, that is an upper bound for the primal suboptimality $F(x_t)-F(x^*)$ defined as:
+In addition, a key concept of the Frank-Wolfe theory is the duality gap, that is an upper bound for the primal suboptimality $F(\mathbf{x}_t)-F(\mathbf{x}^*)$ defined as:
 \begin{equation}
 	\mathcal{G}(\mathbf{x}) =\max_{\mathbf{s}\in\mathit{C}} \langle \nabla F(\mathbf{x}),\mathbf{x}-\mathbf{s}\rangle.
 \end{equation}
