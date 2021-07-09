@@ -1,14 +1,14 @@
 \section{Introduction}
-The main goal of this report is to analyze three different Strochastic Gradient Free Frank-Wolfe algorithms for producing universal adversarial perturbations. These perturbations are designed to fool the LeNet5 convolutional neural network considering the classification task on the MNIST dataset.\\
-Before discussing the implementation, some key concepts about the adversarial attacks and the Frank-Wolfe framework are introduced. The last two sections concern the experiments and the conclusive comparison of the results.
+The main goal of this report is to analyze three different Stochastic Gradient Free Frank-Wolfe algorithms for producing universal adversarial perturbations. These perturbations are designed to fool the LeNet-5 convolutional neural network considering the classification task on the MNIST dataset.\\
+Before discussing the implementation, some key concepts about the adversarial attacks and the Frank-Wolfe framework are introduced. The last two sections instead concern the experiments and the conclusive comparison of the results.
 
 \subsection{Adversarial Attacks}
 An adversarial attack is a machine learning technique that has the aim of fooling a classifier by providing it with
 carefully designed inputs, called \textit{adversarial examples}. An adversarial example is a datapoint that has
 been perturbed or distorted in order to cause the classifier to make an erroneous prediction.
 
-Adversarial attacks can be divided into targeted and untargeted attacks. \textit{Targeted} attacks have the aim to
-misclassify the input image to a target class, while \textit{untargeted} attacks are aimed at only misclassifying
+Adversarial attacks can be divided into targeted and untargeted attacks. The primer ones aim to
+misclassify the input image to a target class, while the latter ones aim at only misclassifying
 the input image to any other class except the true class.
 
 A further way to categorize adversarial attacks is to divide them into white-box and black-box attacks, based on
@@ -45,7 +45,7 @@ In fact, an important property of universal perturbations is that they are image
 they don't depend on a single image, but rather they are able to cause label estimation change for most of
 the images contained in a dataset.
 
-It is important to notice that there's no unique universal perturbation: different random shuffling of the data used
+It is important to notice that there is no unique universal perturbation: different random shuffling of the data used
 to compute the perturbation can lead to a diverse set of universal perturbations.
 
 Furthermore, universal perturbations mostly make natural images classified with specific labels, called
