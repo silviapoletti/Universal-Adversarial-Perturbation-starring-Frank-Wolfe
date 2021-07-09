@@ -1,11 +1,16 @@
 \section{Experiments and results}
 The data come from the MNIST dataset, containing 60000 train images and 10000 test images from 10 almost balanced classes (arabic numerals). The following simulations generate a universal adversarial perturbation starting from a portion of the MNIST train dataset. Then the perturbation is added to the test images that have been correctly classified by the pre-trained LeNet-5 convolutional neural network, aiming to maximally increase the loss function, and therefore minimizing the accuracy.\\
 We now present the results of the three algorithm previously introduced: (i) Decentralized Stochastic Gradient Free Frank Wolfe, (ii) Decentralized Variance-Reduced Stochastic Gradient Free Frank Wolfe, (iii) Distributed Stochastic Gradient Free Frank Wolfe.\\
-Our interest is to find a perturbation that is able to misclassify the predictions of LeNet-5 on MNIST digit images, by making also the noise on the images imperceptible to human eyes.\\ In order to generate an adversarial example we have to find $x'$ for a given input $x$ such that the corresponding loss function $L(x',y)$ is maximized, while minimizing the $\ell_{\infty}$ norm related to it. This minimization is needed for finding  the minimal perturbation that makes the digits unchanged. We set the $\delta$ noise within $\varepsilon=0.25$ by using the $\ell_{\infty}$ norm. We performed the experiments on the MNIST dataset with the aim to find an universal adversarial perturbation, and we defined a pretrained LeNet-5 model by using Keras/Tensorflow to test our algorithms and demonstrate the efficiency of the attacks.
+Our interest is to find a perturbation that is able to misclassify the predictions of LeNet-5 on MNIST digit images, by making also the noise on the images imperceptible to human eyes.\\ In order to generate an adversarial example we have to find $\mathbf{x}'$ for a given input $\mathbf{x}$ such that the corresponding loss function $L(\mathbf{x}',y)$ is maximized, while minimizing the $\ell_{\infty}$ norm related to it. This minimization is needed for finding  the minimal perturbation that makes the digits unchanged. We set the $\delta$ noise within $\varepsilon=0.25$ by using the $\ell_{\infty}$ norm. We performed the experiments on the MNIST dataset with the aim to find an universal adversarial perturbation, and we defined a pretrained LeNet-5 model by using Keras/Tensorflow to test our algorithms and demonstrate the efficiency of the attacks.
+
+\textcolor{red}{To quantify the performance of the FW algorithms, it can be used the Frank-Wolfe duality gap, which is an upper bound on the primal suboptimality $f(x_t)-f(x^*)$, define as
+	\[ \mathcal{G} = \max_{v \in C} <F(x),x-v> \]
+where $C$ is the associated constraint. In addition, it can also be used as a stopping criterion for FW algorithms.\\
+From the theory we know that the major improvement of the variance reduction scheme is in terms of the fradient tracking performance, thath is, with $S_2 = (2d+9)\sqrt{n}/n_0$, $q = n_0 \sqrt{n}/6$, where $n_0 \in [1, \sqrt{n}/6)$. For the data that we have this tecnique for measuring the performances is unfeasible.}
 
 \textcolor{gray}{Non so se ha senso metterlo qua, magari meglio discutere anche con Chiara se ha senso dire che comunque tutti gli algoritmi decentralize e distributed sono stati implementati in senquential mode invece che usare un vera e propria architettura distribuita. Dobbiamo far notare che comunque il codice e` stato implementato definendo i metodi in modo tale che sia scalabile facilmente alla modalita distribuita usando per esempio la libreria Ray}
 
-\textcolor{gray}{Since the discussed algorithms have a decentralized or a distributed "part", we implemented them in a sequential manner but in such way that all the algorithms could be scaled and changed easily to a distributed or decentralized architecture. Indeed, all the methods have been implemented by dividing the workers and master nodes behaviour in different separate methods, and the extension to a distributed architecture could be reached by configuring a framework/library like Ray\footnote{Ray: https://github.com/ray-project/ray} or PySpark\footnote{PySpark: https://spark.apache.org/docs/latest/api/python/} for defining a distributed computing application.}
+\textcolor{gray}{Since the discussed algorithms have a decentralized or a distributed "part", we implemented them in a sequential manner but in such a way that all the algorithms could be scaled and changed easily to a distributed or decentralized architecture. Indeed, all the methods have been implemented by dividing the workers and master nodes behaviour in different separate methods, and the extension to a distributed architecture could be reached by configuring a framework/library like Ray\footnote{Ray: https://github.com/ray-project/ray} or PySpark\footnote{PySpark: https://spark.apache.org/docs/latest/api/python/} for defining a distributed computing application.}
 
 \subsection{Decentralized Stochastic Gradient Free Frank Wolfe}
 \textcolor{blue}{Usiamo il passato ora, siccome e` un esperimento svolto}
@@ -17,21 +22,27 @@ Un piccolo confronto con il guassian noise come fatto nel jupyter sarebbe il top
 }
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=3.8cm]{image_perturbation_example_30.png}\hfil
-	\includegraphics[width=3.8cm]{image_perturbation_example_35.png}
-	\caption{Decentralized FW Perturbated Images: no clue on the parameters}
+	\includegraphics[width=3.6cm]{real_image_5.png}\hfil
+	\includegraphics[width=3.58cm]{report_decentralized_T50_m15.png}
+	\caption{Image of 5 changed to 3 with the adversarial perturbation generated by the Decentralized Algorithm \ref{decentralized} with a query of 50 and 15 directions.}
 	\label{fig:decentralized}
 \end{figure}
-In Figure \ref{fig:decentralized} we can see an example of the perturbed images.
+In Figure \ref{fig:decentralized} we can see an example of the perturbation applyed on an image of the MNIST digits.
 
 \subsection{Decentralized Variance-Reduced Stochastic Gradient Free Frank Wolfe}
 For the Variance-Reduced FW algorithm we consider 5 workers and with 800 different images each, i.e. 160 images per digit. We set the number of queries to 20 and the number of component functions $S_2 = 3$. We then run the Algorithm \ref{variance-reduced} for $q=5,7,9$ and $n=5,10$. The choice for the values of $q$ is because of the different number of calling to the KWSA, while the $n$ parameter identify the different number of component function.\\
-To quantify the performance of Algorithm \ref{variance-reduced}, it can be used the Frank-Wolfe duality gap, which is an upper bound on the primal suboptimality $f(x_t)-f(x^*)$, define as
-\[ \mathcal{G} = \max_{v \in C} <F(x),x-v> \]
-where $C$ is the associated constraint. In addition, it can also be used as a stopping criterion for FW algorithms.\\
-From the theory we know that the major improvement of the variance reduction scheme is in terms of the fradient tracking performance, thath is, with $S_2 = (2d+9)\sqrt{n}/n_0$, $q = n_0 \sqrt{n}/6$, where $n_0 \in [1, \sqrt{n}/6)$. For the data that we have this tecnique for measuring the performances is unfeasible.\\
 
 DA SPIEGARE MEGLIO, QUESTA PARTE NON L'AVEVO CAPITA MOLTO BENE :(
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=3.7cm]{real_image.png}
+	\includegraphics[width=3.9cm]{perturbed_images.png}
+	\caption{Perturbation and perturbed image of the distributed FW with T=100 and m=15.}
+	\label{fig:variance-reduced}
+\end{figure}
+In Figure \ref{fig:variance-reduced} we can see an example of the perturbations.
+
 
 \subsection{Distributed Stochastic Gradient Free Frank Wolfe}
 To test the performance of Algorithm \ref{distributed} we used 10 workers and an adjacecy matrix $A$ given by 
@@ -53,10 +64,9 @@ We can notice that the diagonal is of ones, this because each node is connected 
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=3cm]{report_distributed_delta_100_15.png}\hfil
-	\includegraphics[width=5cm]{report_perturbated_img_100_15.png}
-	\caption{Perturbation and perturbed image of the distributed FW with T=100 and m=15.}
-	\label{fig:distributed_delta_50+20}
+	\includegraphics[width=4cm]{report_distributed_delta_20_15.png}
+	\caption{Perturbation generated by the Distributed Algorithm \ref{distributed} with a query of 20 and 15 directions.}
+	\label{fig:variance-reduced}
 \end{figure}
-In Figure \ref{fig:distributed_delta_50+20} we can see an example of the perturbations.
+
 \subsection{Comparison between the perturbations}
