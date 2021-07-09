@@ -1,36 +1,35 @@
-\subsection{Decentralized Variance-Reduced Stochastic Gradient Free Frank Wolfe}
-This section analyzes the SPIDER variance reduction technique, which is built for dynamic tracking, while avoiding excessive querying to oracles and ultimately reducing query complexity.\\
-At the beginning of Algorithm \ref{variance-reduced} we initialize our initial perturbation to a zero $d$ vector \boldmath$\delta_0$ and denote $q \in \mathbb{N}_{+}$ as a period parameter. At the beginning of each period, i.e. $mod(q,n)=0$, each worker employ KWSA for the computation of its own gradient estimation along the canonical basis vector $e_k$, with $k=1, \dots, d$, using $\eta = \frac{2}{d^{1/2}(t+8)^{1/3}}$. In all other cases, the worker selected a mini-batch $ S'$ of local component functions and use the RDSA to estimate and update the gradients. In particular, $S_2$ pairs of component functions are chosen for the computation of the gradient estimation
-\[\mathbf{e}_k^T\mathbf{g}_i(\text{\boldmath} \delta_t) = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\mathbf{x}_t + \eta\mathbf{e}_k) - F_{i,j}(\mathbf{x}_t) }{\eta},\]
-which is then sent to the master node. While running RDSA we use $\eta = \frac{2}{d^{3/2}(t+8)^{1/3}}$.\\
-Then, the master node computes the average of the estimated gradients and calculates the new perturbation. Algorithm \ref{variance-reduced} returns all the perturbations computed by the master node.
+\subsection{Decentralized Variance-Reduced Stochastic Gradient Free Frank-Wolfe}
+In this section the goal is to solve a special case of (1), that is
+\begin{equation}
+	\mbox{\boldmath$ \delta$}' = \argmin_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\varepsilon} \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}}\bigg[-\sum_{i=1}^M \sum_{j=1}^n F_{i,j}(\mathbf{x}+\mbox{\boldmath$ \delta$},y)\bigg].
+\end{equation}
+The implementation takes into account the SPIDER variance reduction technique, which is built for dynamic tracking, while avoiding excessive querying to oracles and ultimately reducing query complexity.\\
+In the Decentralized Variance-Reduced Stochastic Gradient Free Frank-Wolfe method,
+at the beginning of each period, that is when $mod(t,q)=0$ with period parameter $q \in \mathbb{N}_{+}$, each worker employs the KWSA scheme for the computation of its gradient estimation. In all the other cases, each worker selects a mini-batch of local component functions $\{F_{i,j}\}_{j\in S_2}$ and uses the RDSA scheme to estimate and update its gradient. Then, the master node computes the average of the received estimated gradients and calculates the new perturbation using (6) with $\gamma_t = \frac{2}{t+8}$.\\
+For what concerns the data, each worker receives the same amount of images (selected to be balanced with respect to the ten classes) and the corresponding labels from the dataset. In particular, the same image is not given to different workers. For both the KWSA and the RDSA schemes, each worker samples a batch of $\frac{S_1}{M}$ images, from the ones received. For the KWSA scheme, this sampling is done $d$ times, one for each component of the gradient.  
 \begin{algorithm}
-	\caption{Decentralized Variance-Reduced Stochastic Gradient Free FW}\label{variance-reduced}
-	\textbf{Input} Batches of images $\{\mathbf{x}_i\}_{i=1}^M$, labels $y$, Loss Function $F(\text{\boldmath}\delta;y)$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of images $S_1$, subset of component functions $S_2$, total number of component functions $n$, period $q$.\\
+	\caption{Decentralized Variance-Reduced SGF FW}\label{variance-reduced}
+	\textbf{Input} Batches of images $\{\mathbf{x}_i\}_{i=1}^M$, batches of labels $\{\mathbf{y}_i\}_{i=1}^M$, loss function $F$, number of queries $T$, number of workers $M$, image dimension $d$, tolerance $\varepsilon$, number of sampled images and labels $S_1$, number of sampled component functions $S_2$, total number of component functions $n$, period $q$.\\
 	\textbf{Output} Universal perturbation's history.
 	\begin{algorithmic}[1]		
-		\State Initialize \boldmath$\delta_0 = \text{0}$.
+		\State Initialize \mbox{\boldmath$ \delta$}$_{0} = \mathbf{0}$.
 		\For {$t = 0, \dots, T-1$}
+		\State Master node computes parameters required for the computation of the KWSA and RDSA schemes: 
+		{\scriptsize\[\eta_1 =\frac{2}{d^{1/2}(t+8)^{1/3}},\;\;\;\eta_2 =\frac{2}{d^{3/2}(t+8)^{1/3}}\]}
 		\State Each worker $i$ computes:
 		\If {$mod(t,q)=0$}
-		\State Draw {\small$S_1' = \frac{S_1d}{M}$} samples for each dimension at each worker $i$ and compute its local gradient \newline
-		{\small$ \mathbf{e}_k^T\mathbf{g}_i(\text{\boldmath} \delta_t) = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\mathbf{x}_t + \eta\mathbf{e}_k) - F_{i,j}(\mathbf{x}_t) }{\eta} $} along each canonical basis vector $\mathbf{e}_k$.
+		\State For each component $k$ of the gradient, draw $\frac{S_1}{M}$ images $\mathbf{x}'_i$ and the corresponding labels $\mathbf{y}'_i$ from the batches $\mathbf{x}_i$ and $\mathbf{y}_i$, for a total of $\frac{S_1}{M}d$ samples. For $k=1\dots d$ compute \newline
+		\[\small \mathbf{e}_k^T\mathbf{g}_i = \frac{1}{n}\sum_{j=1}^{n}\frac{F_{i,j}(\mathbf{x}'_i + \mbox{\boldmath$ \delta$}_t + \eta_1\mathbf{e}_k, \mathbf{y}'_i) - F_{i,j}(\mathbf{x}'_i+\mbox{\boldmath$ \delta$}_t, \mathbf{y}'_i) }{\eta_1} \]
 		
-		\State Each worker updates $\mathbf{g}_{i,t} = \mathbf{g}_i(x)_t$.
+		\State Update $\mathbf{g}_{i,t} = \mathbf{g}_i$.
 		\Else
-		\State Draw $S_2$ pairs of component functions and Gaussian random vectors $\{\mathbf{z}\}$ at each worker $i$ and update
-		
-		\parbox[b]{\linewidth}{$\mathbf{g}_i(x)_t = \frac{1}{|S_2|} \sum_{j \in S_2}\frac{F_{i,j}(\mathbf{x}_t + \eta\mathbf{e}_k)- F_{i,j}(\mathbf{x}_t) }{\eta} \mathbf{z}$ -\\
-			
-			$\frac{F_{i,j}(\mathbf{x}_{t-1} + \eta\mathbf{e}_k) - F_{i,j}(\mathbf{x}_{t-1}) }{\eta} \mathbf{z}$}
-				
-		\State Each worker updates 
-		\begin{equation*}
-			\mathbf{g}_{i,t} = \mathbf{g}_i(\mathbf{x}_t) +  \mathbf{g}_{i,t-1}.
-		\end{equation*}
+		\State Sample $\mathbf{z} \sim\mathcal{N}(0,\mathbb{1}_d)$. Draw $S_2$ component functions and $\frac{S_1}{M}$ images $\mathbf{x}'_i$ and the corresponding labels $\mathbf{y}'_i$ from the batches $\mathbf{x}_i$ and $\mathbf{y}_i$. Then compute
+		\[\small \mathbf{g}_i = \frac{1}{|S_2|}\sum_{j\in S_2}\frac{F_{i,j}(\mathbf{x}'_i + \mbox{\boldmath$ \delta$}_t + \eta_2\mathbf{z}, \mathbf{y}'_i) - F_{i,j}(\mathbf{x}'_i+\mbox{\boldmath$ \delta$}_t, \mathbf{y}'_i) }{\eta_2}\mathbf{z} \]
+		\[\small-\frac{F_{i,j}(\mathbf{x}'_i + \mbox{\boldmath$ \delta$}_{t-1} + \eta_2\mathbf{z}, \mathbf{y}'_i) - F_{i,j}(\mathbf{x}'_i+\mbox{\boldmath$ \delta$}_{t-1}, \mathbf{y}'_i) }{\eta_2}\mathbf{z} \]
+		\State Update $\mathbf{g}_{i,t} = \mathbf{g}_i +\mathbf{g}_{i,t-1} $.
 		\EndIf
-		\State Each worker pushes $\mathbf{g}_{i,t}$ to the master node.
-		\State Master node computes 
+		\State Each worker $i$ pushes $\mathbf{g}_{i,t}$ to the master node.
+		\State Master node computes the gradients average:
 		\[\mathbf{g}_t = \frac{1}{M} \sum_{i=1}^{M} \mathbf{g}_{i,t}.\]
 		\State Master node computes $\mathbf{v}_t = - \varepsilon sign(\mathbf{g}_t)$.
 		\State Master node computes \mbox{\boldmath$ \delta$}$_{t+1} = (1-\gamma_t)\mbox{\boldmath$ \delta$}_t + \gamma_t\mathbf{v}_t$ and sends it to all nodes.
