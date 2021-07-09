@@ -1,4 +1,8 @@
 \subsection{Decentralized Stochastic Gradient Free Frank-Wolfe}
+In this section the goal is to solve a special case of (1), that is
+\begin{equation}
+	\mbox{\boldmath$ \delta$}' = \argmin_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\varepsilon} \frac{1}{M}\sum_{i=1}^M \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}_i}[- F_i(\mathbf{x}+\mbox{\boldmath$ \delta$},y)].
+\end{equation}
 The decentralized architecture is composed of a central node, called master node, and other nodes connected to it but not to each other, called workers.
 The workers are connected to the master node to read, write and exchange information.\\
 In the Decentralized Stochastic Gradient Free Frank-Wolfe method, the data is spread to $M$ workers and the starting point \mbox{\boldmath$ \delta$}$_{0}$ is initialized to a null $d$-vector.\\

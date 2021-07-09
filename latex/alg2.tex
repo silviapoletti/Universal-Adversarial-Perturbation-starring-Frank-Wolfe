@@ -1,7 +1,7 @@
 \subsection{Decentralized Variance-Reduced Stochastic Gradient Free Frank-Wolfe}
-In this section the goal is to solve a special case of (1), that is
+In this section the goal is to solve another special case of (1), that is
 \begin{equation}
-	\mbox{\boldmath$ \delta$}' = \argmin_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\varepsilon} \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}}\bigg[-\sum_{i=1}^M \sum_{j=1}^n F_{i,j}(\mathbf{x}+\mbox{\boldmath$ \delta$},y)\bigg].
+	\mbox{\boldmath$ \delta$}' = \argmin_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\varepsilon} \sum_{i=1}^M \sum_{j=1}^n \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}_{i,j}}[- F_{i,j}(\mathbf{x}+\mbox{\boldmath$ \delta$},y)].
 \end{equation}
 The implementation takes into account the SPIDER variance reduction technique, which is built for dynamic tracking, while avoiding excessive querying to oracles and ultimately reducing query complexity.\\
 In the Decentralized Variance-Reduced Stochastic Gradient Free Frank-Wolfe method,
