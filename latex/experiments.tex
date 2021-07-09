@@ -12,3 +12,12 @@ In addition, a key concept of the Frank-Wolfe theory is the duality gap, that is
 	\mathcal{G}(\mathbf{x}) =\max_{\mathbf{s}\in\mathit{C}} \langle \nabla F(\mathbf{x}),\mathbf{x}-\mathbf{s}\rangle.
 \end{equation}
 Therefore, a further improvement of the implementation could be the use of the Frank-Wolfe duality gap as stopping criterion for the algorithms. However, this turned out to be difficult in the distributed settings at hand.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=2.5cm]{T20_final.png}\hfil
+	\includegraphics[width=2.5cm]{q5_n10_final.png}\hfil
+	\includegraphics[width=2.5cm]{T100_final_distr.png}
+	\caption{Perturbations of the three algorithms: to the left we have decentralized with T=20, in the center variance-reduced q=7 and n=10, and to the right we have distributed with T=100.}
+	\label{fig:perturbations}
+\end{figure}
