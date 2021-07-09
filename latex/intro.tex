@@ -16,8 +16,8 @@ the input image to any other class except the true class.
 A further way to categorize adversarial attacks is to divide them into white-box and black-box attacks, based on
 the information accessible to the attacker. To perform a \textit{white-box} attack, the classifier, the trained
 parameter values, and the analytical form of the classifier loss function must be all available to the attacker. On
-the contrary, in a \textit{black-box} setting, only a zeroth-order oracle is accessible, that is for an input (x,y),
-the value of the loss function L(x,y) is accessible. Therefore, black-box attacks can be seen as an optimization problem,
+the contrary, in a \textit{black-box} setting, only a zeroth-order oracle is accessible, that is for an input $(\mathbf{x},y)$,
+the value of the loss function $F(\mathbf{x},y)$ is accessible. Therefore, black-box attacks can be seen as an optimization problem,
 where the adversarial attack is formulated as a maximization of the classification loss function, whose values are
 accessible only via a zeroth-order oracle.
 
