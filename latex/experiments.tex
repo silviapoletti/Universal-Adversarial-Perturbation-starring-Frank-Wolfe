@@ -13,11 +13,26 @@ In addition, a key concept of the Frank-Wolfe theory is the duality gap, that is
 \end{equation}
 Therefore, a further improvement of the implementation could be the use of the Frank-Wolfe duality gap as stopping criterion for the algorithms. However, this turned out to be difficult in the distributed settings at hand.
 
-\begin{figure}[htbp]
+\begin{figure}%[htbp]
 	\centering
-	\includegraphics[width=2.5cm]{T20_final.png}\hfil
-	\includegraphics[width=2.5cm]{q5_n10_final.png}\hfil
-	\includegraphics[width=2.5cm]{T100_final_distr.png}
-	\caption{Perturbations of the three algorithms: to the left we have decentralized with T=20, in the center variance-reduced q=7 and n=10, and to the right we have distributed with T=100.}
+	\begin{subfigure}[b]{0.15\textwidth}
+		\centering
+		\includegraphics[width=2.5cm]{T20_final.png}
+		\caption{}
+		\label{fig:decentralized_perturbation}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.15\textwidth}
+		\includegraphics[width=2.5cm]{q5_n10_final.png}
+		\caption{}
+		\label{fig:variance-reduce_perturbation}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.15\textwidth}
+		\includegraphics[width=2.5cm]{T100_final_distr.png}
+		\caption{}
+		\label{fig:distributed_perturbation}
+	\end{subfigure}
+	\caption{Perturbations of the three algorithms: \ref{fig:decentralized_perturbation} is the perturbation of the Decentralized SGF FW with T=20 and m=15, \ref{fig:variance-reduce_perturbation} is the perturbation of the Decentralized Reduced-Variance SGF FW with q=5 and n=10, \ref{fig:distributed_perturbation} is the perturbation of the Distribted SGF FW with T=100.}
 	\label{fig:perturbations}
 \end{figure}
