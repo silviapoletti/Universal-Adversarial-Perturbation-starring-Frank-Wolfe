@@ -12,26 +12,27 @@ the input image to any other class except the true class.
 A further way to categorize adversarial attacks is to divide them into white-box and black-box attacks, based on
 the information accessible to the attacker. To perform a \textit{white-box} attack, the classifier, the trained
 parameter values, and the analytical form of the classifier loss function must be all available to the attacker. On
-the contrary, in a \textit{black-box} setting, only a zeroth-order oracle is accessible.
+the contrary, in a \textit{black-box} setting, only a zeroth-order oracle is accessible, that is for an input (x,y),
+the value of the loss function L(x,y) is accessible. Therefore, black-box attacks can be seen as an optimization problem,
+where the adversarial attack is formulated as a maximization of the classification loss function, whose values are
+accessible only via a zeroth-order oracle.
+
+This kind of adversarial attacks can be further categorized into score-based and decision-based attacks.
+In \textit{score-based} attacks, the attacker directly observes a loss value, class probability, or some other
+continuous output of the classifier on a given example, whereas in \textit{decision-based} attacks, the attacker gets to
+observe only the hard label predicted by the classifier.
 
 % For example, an adversarial example would be a perturbed image of a pig which would still be a pig to a human eye, while
 % the classifier would now output the class to be that of an airplane.
 
 % However, in most real-world deployments, it is impractical to assume complete access to the classifier
 % and analytic form of the corresponding loss function, which makes black-box settings more realistic.
-% In a typical black-box setting, the adversary has access only to a zeroth-order oracle, which when queried
-% for an input (x,y) yields the value of the loss function L(x,y).
 
 % Black-box adversarial attacks can be broadly categorized across a few different dimensions: optimization-based
 % versus transfer-based attacks, and score-based versus decision-based attacks.
-% In the optimization-based adversarial setting, the adversarial attack is formulated as a maximization of the
-% classification loss function which can be the accuracy of the classifier or some continuous variant of it while
-% accessing a zeroth-order oracle. The zeroth-order information can be further categorized into score-based and
-% decision-based attacks. By score-based attacks, we mean scenarios in which the attacker directly observes a
-% model loss, class probability, or some other continuous output of the classifier on a given example,
-% whereas in decision-based attacks, the attacker gets to observe only the hard label predicted by the classifier.
+% The zeroth-order information can be further categorized into score-based and decision-based attacks.
 
-In this report we will focus on untargeted, black-box adversarial attacks.
+In this report we will focus on untargeted, black-box, score-based adversarial attacks.
 
 \subsection{Universal Adversarial Perturbations}
 Universal perturbations are small perturbations that, when applied to the input images, are able
