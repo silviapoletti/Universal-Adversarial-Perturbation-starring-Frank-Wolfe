@@ -21,6 +21,8 @@ At the end of the t-th iteration, each worker computes the Frank-Wolfe update of
 	\begin{algorithmic}[1]		
 		\State For $i=1,\dots, M$ initialize \mbox{\boldmath$ \delta$}$_0^i =\mathbf{0} $ and $\bar{\mathbf{g}}_0^i = \mathbf{0}$
 		\For {$t = 1, \dots, T$}
+		\State Compute the parameter required for the computation of the I-RDSA schemes: 
+		${\scriptsize c_t =\frac{2\sqrt{m}}{d^{3/2}(t+8)^{1/3}}}$
 		\State In the first round of communication, each worker $i$ approximates the average iterate: \newline
 		\[\bar{\mbox{\boldmath$ \delta$}}_t^i \leftarrow \sum_{j=1}^{M} W_{ij}\mbox{\boldmath$ \delta$}_t^i\]
 		\State Each worker $i$ computes the I-RDSA scheme:\newline 
