@@ -52,8 +52,8 @@ def get_data(dim=100, load=True):
 def get_image_perturbation(perturbation, title, axis):
     """
     :param perturbation: a  numpy perturbation to plot
-    :param file_path:
-    :return:
+    :param title: title to give to the image genarated
+    :return: the plot of the axis and the image
     """
     img = axis.imshow(perturbation.reshape((28, 28)))
     axis.set_title(title)
@@ -91,9 +91,10 @@ def plot_perturbed_img(perturbation, image_test, file_path=None, figsize=(5,5)):
     a = ax[0].imshow(image, cmap='Greys')
     b = ax[1].imshow(img_noise, cmap='Greys')
     ax[0].set_title("Real image")
-    ax[1].set_title("perturbed image")
+    ax[1].set_title("Perturbed image")
     fig.colorbar(a, ax=ax[0], fraction=0.03, pad=0.05)
     fig.colorbar(b, ax=ax[1], fraction=0.03, pad=0.05)
+    fig.tight_layout(pad=0.3)
     if file_path is not None:
         plt.savefig(file_path, bbox_inches="tight")
     plt.show()
