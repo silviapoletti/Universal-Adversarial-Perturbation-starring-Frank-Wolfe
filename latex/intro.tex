@@ -1,8 +1,6 @@
 \section{Introduction}
-In this report, we analyze the effects of universal adversarial perturbations, created by using three different
-zeroth-order Frank-Wolfe algorithms, on the classification made by LeNet-5.
-We first introduce some key concepts, necessary to understand our work. We then explain the algorithms we used in our
-experiments and finally, we show the experiments' results.
+The main goal of this report is to analyze three different Strochastic Gradient Free Frank-Wolfe algorithms for producing a universal adversarial perturbation. This perturbation is designed to fool the LeNet5 convolutional neural network considering the classification task on the MNIST dataset.\\
+Before discussing the implementation, some key concepts about the adversarial attacks and the Frank-Wolfe framework are intoduced. The last two sections concern the experiments and the conclusive comparison of the results.
 
 \subsection{Adversarial Attacks}
 An adversarial attack is a machine learning technique that has the aim of fooling a classifier by providing it with
