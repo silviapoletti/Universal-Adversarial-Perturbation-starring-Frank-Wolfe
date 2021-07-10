@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}\itemsep=-1pt
 
+\bibitem{A4}
+Manzil~Zaheer Anit Kumar~Sahu and Soummya Kar.
+\newblock Towards gradient free and projection free stochastic optimization,
+  2019.
+
 \bibitem{A1}
 Nicholas Carlini and David Wagner.
 \newblock Towards evaluating the robustness of neural networks, 2017.
