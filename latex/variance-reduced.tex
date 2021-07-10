@@ -12,8 +12,7 @@ The experiments performed with Algorithm \ref{variance-reduced} were conducted c
 			\end{tabular}
 		\end{adjustwidth}
 	\end{center}
-\caption{{\small Summary of $\ell_\infty$ Universal Adversarial Perturbation with $\varepsilon$=0.25. MNIST attack using Distributed Variance-Reduced
-		SGF FW. For increasing values of $q$ the algorithm performs the KWSA scheme less and less times.}}
+\caption{{\small Summary of $\ell_\infty$ Universal Adversarial Perturbation with $\varepsilon$=0.25. MNIST attacks using Decentralized Variance-Reduced SGF FW. The entries of the table represent the accuracies of LeNet-5 for the three different attacks. For increasing values of $q$ the algorithm performs the KWSA scheme less and less times.}}
 	\label{tab:vr}
 \end{table}
 The Figure \ref{fig:vred} compares two adversarial perturbations obtained with same $n$ but different values of $q$. It's clear that perturbation computed with the lowest $q$ is smoother than the other and less visible to the human eyes. By looking at the colorbar, we can also observe that a higher $q$ results in higher absolute values of the perturbation's components: bright yellow and dark blue pixels indicate values near $\pm\varepsilon$ and are much more frequent in the perturbation computed with the highest $q$.
