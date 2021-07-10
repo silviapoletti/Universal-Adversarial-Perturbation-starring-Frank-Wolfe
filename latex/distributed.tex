@@ -1,10 +1,10 @@
 \subsection{Distributed SGF FW Experiments}
-To test the performance of Algorithm \ref{distributed} we used a distributed network of 10 worker nodes and we
+To test the performance of Algorithm \ref{distributed} we used a distributed network of $M=10$ worker nodes and we
 gave them 10 images per class each, for a total of 100 different images each.
 
 Our network is modeled as an undirected simple connected graph $G = (V,E)$, with $V = [1,...,10]$ and $E$ denoting
 the connections between nodes. The connectivity of the graph can be computed in the following way: $\Vert W- J \Vert$,
-where $J= 11^T/10$ and $11^T$ represents a matrix with all entries set to 1. For the experiment, we have created a network
+where $J= \mathbf{11}^T/10$ and $\mathbf{11}^T$ represents a matrix with all entries set to 1. For the experiment, we have created a network
 with a connectivity value of 0.438. The network's connections are determined by the scheme described by the adjacecy
 matrix $A$:
 \[ A =
@@ -62,7 +62,7 @@ them have a 3 shape.
 	\label{fig:distributed}
 \end{figure}
 
-In Figure \ref{fig:distributed}, we can see an example of the perturbation created by Algorithm \ref{distributed},
+In Figure \ref{fig:distributed}, we have an example of the perturbation created by Algorithm \ref{distributed},
 applied to an image of the MNIST digits. As we can see, although we can still recognize the number 3 pattern in the
 perturbation, it is much smoother compared to the one we can observe from the perturbation computed by the Decentralized
 SGF FW algorithm. Nevertheless, it is strong enough to fool the classifier and lead it to a wrong prediction.
@@ -70,7 +70,7 @@ SGF FW algorithm. Nevertheless, it is strong enough to fool the classifier and l
 \begin{table}[htbp]
 	\begin{center}
 		\begin{adjustwidth}{-.6cm}{}
-			\begin{tabular}{cccc}
+			\begin{tabular}{c|ccc}
 				\textbf{Attack} &          20 \textbf{queries} &      50 \textbf{queries} &     100 \textbf{queries} \\
 				\midrule
 				{\small Distributed SGF FW}     &   73.47\% &    74.62\% &       75.84\% \\
@@ -82,4 +82,7 @@ SGF FW algorithm. Nevertheless, it is strong enough to fool the classifier and l
 	\label{tab:distributed}
 \end{table}
 
-In Table \ref{tab:distributed} are displayed the values of accuracy reached by the LeNet-5 classifier on perturbed images.
+In Table \ref{tab:distributed} displays the values of accuracy reached by the LeNet-5 classifier on perturbed
+images, with a perturbation created after different amounts of queries T. We can see that there's no significant
+difference among the accuracy values corresponding to different number of queries. What we can notice is that the
+perturbation becomes slightly less effective in fooling the classifier, as long as we increase the number of queries.
