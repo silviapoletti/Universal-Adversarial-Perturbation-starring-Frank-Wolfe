@@ -4,11 +4,11 @@ We then tuned the hyperparameter $m$, which identifies the directions of the add
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=6cm]{accuracy.png}
-	\caption{{\small Accuracy of Algorithm \ref{decentralized} with respect to the change on the parameter m.}}
+	\caption{{\small Accuracy of Algorithm \ref{decentralized} with respect to the change on the parameter $m$.}}
 	\label{fig:accuracy}
 \end{figure}
 In Figure \ref{fig:accuracy} we can see a plot in which we represent the behaviour of the Decentralized SGF FW algorithm  with respect to the change of the parameter $m$. In particular, we can see that for $m=35$ the algorithm reaches an accuracy of approximately 20\%. With the increasing of $m$, the running time became very large and for this reason we had to find a value for $m$ which returns a low accuracy with respect to a reasonable running time. We ended up with $m=15$, which is a good balance between the two.\\
-For our experiments we then fix $m=15$ and for each image we estimated its gradient using 20, 50 and 100 queries.
+\indent For our experiments we then fix $m=15$ and for each image we estimated its gradient using 20, 50 and 100 queries.
 
 \begin{figure}[h]
 	\centering
