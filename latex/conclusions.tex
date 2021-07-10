@@ -1,20 +1,37 @@
 \section{Conclusions}
-In this report we have focused on the problem of producing universal adversarial perturbations by analizing three
-Stochastic Gradient Free Frank-Wolfe algorithms. In particular, we have shown that the perturbations created by
-Decentralized and Distributed SGF FW algorithms follow a similar and more clear pattern compared to the Decentralized
-Variance-Reduced SGF FW algorithm. In particular, we can clearly see that the reproduced pattern has a 3 shape, which
+In this report we focused on the problem of producing universal adversarial perturbations by analyzing three
+Stochastic Gradient Free Frank-Wolfe algorithms.
+
+First of all, we have shown that the perturbations created by Decentralized (\ref{decentralized}) and Distributed (\ref{distributed})
+SGF FW algorithms follow a similar and more clear pattern compared to the Decentralized Variance-Reduced SGF FW
+algorithm (\ref{variance-reduced}). In particular, we can clearly see that the reproduced pattern has a 3 shape, which
 leads the majority of handwritten digits to be misclassified as 3. This can be explained by the concept of \textit{dominant labels},
 mentioned in Section \ref{section:perturb}. In fact, number 3 is a wide number, that covers most of the space in the image. Therefore, a
 perturbation with a 3 shape can easily lead to the misclassification of smaller numbers such as 1 and 7, which occupy
 less space in the image. On the contrary, the perturbations produced by the Decentralized Variance-Reduced SGF FW algorithm,
 don't have a clear pattern and the noise associated with them looks randomly spread.
 
-Furthermore, the algorithm that reached better results in terms of misclassification is Algorithm \ref{decentralized},
+Secondly, the algorithm that reached better results in terms of misclassification is Algorithm \ref{decentralized},
 which lowered the classifier's accuracy to 55\%. In this sense, the worst algorithm was \ref{variance-reduced} since
 it was unable to lower the classifier's accuracy below 84\%.
+
+If we compare the execution time of the three algorithms, we can observe that algorithms \ref{decentralized} and \ref{distributed}
+are much faster then algorithm \ref{variance-reduced}. This is due to the fact that algorithm \ref{variance-reduced}
+employs KWSA, which is very expensive in terms of CPU time.
+
+Compared to the experiments described in paper \cite{A3}, we obtained slightly higher error rates with algorithm
+\ref{decentralized}, while, with algorithm \ref{distributed} , we got lower error rates. The latter result can be
+explained by the fact that we chose to use I-RDSA with $m=15$ instead of KWSA, to reduce the time complexity of the algorithm,
+although KWSA gives a more precise gradient approximation. Furthermore, the distributed setting of algorithm \ref{distributed}
+naturally leads to a less precise gradient approximation, due to the fact that each node has access only to the
+computations made by its neighbours. Therefore, the choice of a less precise method to compute the gradient, i.e. I-RDSA with a
+small value for $m$, make the resulting perturbation less effective. Nevertheless, we can consider the result we obtained
+with this algorithm satifiable.
 
 
 % confronto tra i nostri metodi:
 % - confronto pattern --> how the noise is spread in the perturbation
 % - confronto accuracy --> small accuracy, best algorithm
 % - confronto running-time?
+
+% confronto con i risultati del paper:
