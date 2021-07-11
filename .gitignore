@@ -26,7 +26,7 @@ src/.ipynb_checkpoints/
 *.cb
 *.cb2
 .*.lb
-*.pdf
+latex/*.pdf
 *.bbl
 *.blg
 *.gz
