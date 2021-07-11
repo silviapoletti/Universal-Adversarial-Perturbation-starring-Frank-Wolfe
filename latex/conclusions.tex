@@ -4,7 +4,7 @@ Stochastic Gradient Free Frank-Wolfe algorithms.
 
 First of all, we have shown that the perturbations created by Decentralized (\ref{decentralized}) and Distributed (\ref{distributed})
 SGF FW algorithms present a similar and more clear pattern compared to the Decentralized Variance-Reduced SGF FW
-algorithm (\ref{variance-reduced}). In particular, we can clearly see that the reproduced pattern has a 3-shape, which
+Algorithm (\ref{variance-reduced}). In particular, we can clearly see that the reproduced pattern has a 3-shape, which
 leads the majority of handwritten digits to be misclassified as 3 or 8, which has a similar shape. This can be explained by the concept of \textit{dominant labels},
 mentioned in Section \ref{section:perturb}. In fact, digit 3 is a wide number, that covers most of the space in the image. Therefore, a
 perturbation with a 3-shape can easily lead to the misclassification of smaller numbers such as 1 and 7, which occupy
@@ -16,11 +16,11 @@ which lowered the classifier's accuracy to 55\%. In this sense, the worst algori
 it was unable to decrease the classifier's accuracy below 84\%. A possible improvement could be a better tuning of the hyperparameters; in fact in our experiments we considered quite low values of the number $M$ of workers, the number $T$ of queries and the number $S_2$ of sampled component functions and we also set the period parameter $q$ so that the KWSA scheme was called at most 4 times. 
 
 If we compare the execution time of the three algorithms, we can observe that algorithms \ref{decentralized} and \ref{distributed}
-are much faster then algorithm \ref{variance-reduced}. This is due to the fact that Algorithm \ref{variance-reduced}
+are much faster then Algorithm \ref{variance-reduced}. This is due to the fact that Algorithm \ref{variance-reduced}
 employs KWSA, which is very expensive in terms of CPU time.
 
-Compared to the experiments described in paper \cite{A3}, we obtained slightly higher error rates with algorithm
-\ref{decentralized}, while, with algorithm \ref{distributed} , we achieved lower error rates. The latter result can be
+Compared to the experiments described in paper \cite{A3}, we obtained slightly higher error rates with Algorithm
+\ref{decentralized}, while, with Algorithm \ref{distributed} , we achieved lower error rates. The latter result can be
 explained by the fact that we chose to use the I-RDSA scheme with $m=15$ instead of the KWSA scheme, to reduce the time
 complexity of the algorithm, although the KWSA scheme gives a more precise gradient approximation. 
 
@@ -29,6 +29,8 @@ distributed setting of Algorithm \ref{distributed} naturally leads to a less pre
 fact that each node has access only to the computations made by its neighbors. Therefore, the choice of a less precise
 method to compute the gradient, i.e. the I-RDSA scheme with a small value for $m$, makes the resulting perturbation
 less performing. Nevertheless, the attack performed with the perturbation obtained from Algorithm \ref{distributed} is satisfying enough, since random noise resulted to be much less effective.
+
+Moreover, it has to be noticed that although the perturbations of Algorithm \ref{decentralized} lower more the accuracy than the ones of Algorithm \ref{distributed}, the latter are much less visible. This can be easily seen by comparing the adversarial example in Figure \ref{fig:decentralized_perturbations} with the one in Figure \ref{fig:distributed}.
 
 Finally, in our last experiment we proved that the perturbation created with Algorithm \ref{decentralized} on LeNet-5's loss function is universal
 not only with respect to the MNIST dataset, but also across different deep neural network architectures, such as AlexNet.
