@@ -50,7 +50,8 @@ It is interesting to notice that with $T=20$ queries of Algorithm \ref{decentral
 	\label{tab:decentralized}
 \end{table}
 
-In Figure \ref{fig:decentralized} is represented the perturbation of Figure \ref{fig:decentralized_perturbations} (c) applied on an image from class 4. The perturbed images has been classified as 3, consistently with the 3-shape of the perturbation.
+In Figure \ref{fig:decentralized} is represented the perturbation of Figure \ref{fig:decentralized_perturbations} (c)
+applied on an image from class 4. The perturbed images have been classified as 3, consistently with the 3-shape of the perturbation.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=6cm]{image_pertub_T100_final.png}
@@ -63,6 +64,6 @@ In Figure \ref{fig:decentralized} is represented the perturbation of Figure \ref
 	\caption{{\small Image belonging to class 7 and correctly classified by the network despite the gaussian noise.}}
 	\label{fig:gaussian_noise}
 \end{figure}
-To have a yardstick, the predictions of LeNet-5 remain very precise (89.17\% of accuracy) when tested on the images perturbed with random noise (Gaussian with mean 0 and standard deviation 0.3). Even though the Figure \ref{fig:gaussian_noise} shows a very evident noise compared to the one of the adversarial example in the previous image, the network still classifies correctly the images perturbed with a Gaussian noise.
+To have a yardstick, the predictions of LeNet-5 remain very precise (89.17\% of accuracy) when tested on the images perturbed with random noise (Gaussian with mean 0 and standard deviation 0.3). Even though Figure \ref{fig:gaussian_noise} shows a very evident noise compared to the one of the adversarial example in the previous image, the network still classifies correctly the images perturbed with a Gaussian noise.
 
 It is noteworthy the comparison between the attacks: the Gaussian perturbation spreads the noise randomly in the space, while the Decentralized SGF FW's adversarial perturbation is characterize by a clear pattern that covers the majority of the image space and allows to fool the network on most images.
