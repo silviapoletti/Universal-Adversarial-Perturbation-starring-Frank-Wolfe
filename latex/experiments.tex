@@ -12,4 +12,5 @@ In addition, a key concept of the Frank-Wolfe theory is the duality gap, that is
 \begin{equation}
 	\mathcal{G}(\mathbf{x}) =\max_{\mathbf{s}\in\mathit{C}} \langle \nabla F(\mathbf{x}),\mathbf{x}-\mathbf{s}\rangle.
 \end{equation}
+
 Therefore, a further improvement of the implementation could be the use of the Frank-Wolfe duality gap as a stopping criterion for the studied algorithms.\\ However, this turned out to be difficult to develop in all of them, since we do not have direct accessibility to the perturbed images from the master node in the decentralized setting. Instead, in the distributed architecture, the presence of a synchronized communication among workers results in a difficult global stopping criteria.
