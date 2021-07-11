@@ -1,5 +1,7 @@
 \section{Experiments}
-The data come from the MNIST dataset, containing 60000 train images and 10000 test images from 10 almost balanced classes (arabic numerals). The following simulations generate a universal adversarial perturbation starting from a portion of the MNIST test dataset. Then the perturbation is added to the test images that have been correctly classified by the pre-trained LeNet-5 convolutional neural network, aiming to maximally increase the loss function, and therefore minimize the accuracy.\\
+The data we used in our experiments come from the MNIST dataset, which contains 60000 train images and 10000 test images
+from 10 almost balanced classes (arabic numerals). Each of the following simulations generate a universal adversarial perturbation
+starting from a portion of the MNIST test dataset. Then the perturbation is added to the test images that have been correctly classified by the pre-trained LeNet-5 convolutional neural network, aiming to maximally increase the loss function, and therefore minimize the accuracy.\\
 \indent In particular, the perturbation has to inject a minimal visual distortion to the original images and this is ensured by the constraint on the $\ell_{\infty}$ norm in the optimization problem (1). Therefore, the digits in the perturbed images still appear clearly distinguishable to the human eyes, but get misclassified by LeNet-5.\\
 \indent 
 In the following experiments, the $\ell_{\infty}$ norm of the perturbation is chosen so as not to be higher than $\varepsilon=0.25$.\\
