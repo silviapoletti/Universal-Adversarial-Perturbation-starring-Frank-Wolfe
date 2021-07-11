@@ -4,10 +4,10 @@ We then tuned the hyperparameter $m$ for the number of directions to be sampled 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=6cm]{accuracy.png}
-	\caption{{\small This plot was obtained by running the Algorithm \ref{decentralized} multiple times, while changing the value of the parameter $m$ (horizontal axis) from $5$ to $40$ and mantaining all the other parameter fixed. The vertical axes indicates the values of the accuracy.}}
+	\caption{{\small This plot was obtained by running the Algorithm \ref{decentralized} multiple times, while changing the value of the parameter $m$ (horizontal axis) from $5$ to $40$ by keeping all the other parameter fixed. The vertical axes indicates the values of the accuracy.}}
 	\label{fig:accuracy}
 \end{figure}
-\indent With the increasing of $m$, the running time becames very large and for this reason we had to find a value for $m$ which returns a low accuracy with respect to a reasonable running time. We ended up with $m=15$, which is a good compromise between the two, and mantained this value fixed for all the runs.\\
+\indent With the increasing of $m$, the running time becomes very large and for this reason we had to find a value for $m$ which returns a low accuracy with respect to a reasonable running time. We ended up with $m=15$, which is a good compromise between the previous ones, and we kept this value fixed for all the runs.\\
 \indent In particular, we performed three different experiments, considering $T=20$, $T=50$ and $T=100$. As the number of queries increases, the pattern of the perturbation becomes clearer, and in Figure \ref{fig:decentralized_perturbations} we can see how the 3-shape perturbation becomes more evident for higher values of $T$. 
 \begin{figure}[h]
 	\centering
@@ -63,6 +63,6 @@ In Figure \ref{fig:decentralized} is represented the perturbation of Figure \ref
 	\caption{{\small Image belonging to class 7 and correctly classified by the network despite the gaussian noise.}}
 	\label{fig:gaussian_noise}
 \end{figure}
-To have a yardstick, the predictions of LeNet-5 remain very precise (89.17\% of accuracy) when tested on the images perturbed with random noise (Gaussian with mean 0 and standard deviation 0.3). Even though the Figure \ref{fig:gaussian_noise} shows a very evident noise compared to the one of the adversarial example in the previous image, the network still classifies correctly the images perturbed with gaussian noise.
+To have a yardstick, the predictions of LeNet-5 remain very precise (89.17\% of accuracy) when tested on the images perturbed with random noise (Gaussian with mean 0 and standard deviation 0.3). Even though the Figure \ref{fig:gaussian_noise} shows a very evident noise compared to the one of the adversarial example in the previous image, the network still classifies correctly the images perturbed with a Gaussian noise.
 
-It is noteworthy the comparison between the attacks: the gaussian perturbation spreads the noise randomly in the space, while the Decentralized SGF FW's adversarial perturbation is characterize by a clear pattern that covers the majority of the image space and allows to fool the network on most images.
+It is noteworthy the comparison between the attacks: the Gaussian perturbation spreads the noise randomly in the space, while the Decentralized SGF FW's adversarial perturbation is characterize by a clear pattern that covers the majority of the image space and allows to fool the network on most images.
