@@ -8,7 +8,7 @@ The workers are connected to the master node to read, write and exchange informa
 \indent In the Decentralized Stochastic Gradient Free Frank-Wolfe method implemented in Algorithm \ref{decentralized}, the data are spread to $M$ workers and the starting point \mbox{\boldmath$ \delta$}$_{0}$ is initialized to a zeros $d$-vector.\\
 \indent Each worker $i$ computes its local gradient using the I-RDSA scheme and considering a batch of images $\mathbf{x}_i$ and the corresponding labels $\mathbf{y}_i$ from the dataset. Then the workers apply the smoothing scheme (3).\\
 \indent When all the workers have finished their tasks, they send their results to the master node, which computes the average of the estimated gradients and send back the new iterate \mbox{\boldmath$ \delta$}$_{t+1}$, obtained from (5) and (6) with $\gamma_t = \frac{2}{t+8}$.\\
-\indent When all the iterations are done, the algorithm returns the hystory of all the perturbations computed by the master node.
+\indent When all the iterations are done, the algorithm returns the history of all the perturbations computed by the master node.
 
 \begin{algorithm}
 	\caption{Decentralized SGF FW}\label{decentralized} 
