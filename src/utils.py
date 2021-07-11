@@ -22,8 +22,6 @@ def get_data(dim=100, load=True):
     right_pred_data = test_x[indexes]
     right_pred_labels = test_y[indexes]
 
-    print(len(right_pred_labels))  # 9826
-
     labels_number = 10
     data_per_classes = []
     for label_class in range(0, labels_number):
@@ -33,8 +31,6 @@ def get_data(dim=100, load=True):
     data_workers = []
 
     step = dim//labels_number
-    print("step", step)
-    print(data_per_classes.shape)
     for offset in range(0, dim, step):
         image_worker = []
         for c in range(0, labels_number):
@@ -42,12 +38,12 @@ def get_data(dim=100, load=True):
         data_workers.append(image_worker)
 
     data_workers = np.array(data_workers)
-    print(data_workers.shape)  # now all 10 workers have dim images, step for each class.
 
     y_workers = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     y_workers = np.repeat(y_workers, step)
 
     return data_workers, y_workers, lenet5, right_pred_data, right_pred_labels,  test_x, test_y
+
 
 def get_image_perturbation(perturbation, title, axis):
     """
@@ -60,12 +56,14 @@ def get_image_perturbation(perturbation, title, axis):
     plt.colorbar(img, ax=axis, fraction=0.03, pad=0.05)
     return axis, img
 
+
 def plot_perturbation(perturbation, title, file_path=None, figsize=(5,5)):
     fig, ax = plt.subplots(figsize=figsize)
     ax, img = get_image_perturbation(perturbation, title, ax)
     if file_path is not None:
         plt.savefig(file_path, bbox_inches="tight")
     plt.show()
+
 
 def get_image_perturbed(perturbation, image_test, title, axis):
     image = image_test.reshape(28, 28)
@@ -75,6 +73,7 @@ def get_image_perturbed(perturbation, image_test, title, axis):
     axis.set_title(title)
     plt.colorbar(img, ax=axis, fraction=0.03, pad=0.05)
     return axis, img
+
 
 def plot_perturbed_img(perturbation, image_test, file_path=None, figsize=(5,5)):
     """
@@ -99,6 +98,7 @@ def plot_perturbed_img(perturbation, image_test, file_path=None, figsize=(5,5)):
         plt.savefig(file_path, bbox_inches="tight")
     plt.show()
 
+
 def predict_single_img_perturbation(lenet5, image, delta):
     """
     :param image: Single image to predict
@@ -109,17 +109,20 @@ def predict_single_img_perturbation(lenet5, image, delta):
     image_noise = np.clip(image_noise, 0., 1.)
     return lenet5.predict(np.array([image_noise]))[0]
 
+
 def predict_images_perturbation(lenet5, images, delta):
     deltas = np.tile(delta, images.shape[0])
     images_noise = images + deltas.reshape(images.shape[0], 28, 28, 1)
     images_noise = np.clip(images_noise, 0., 1.)
     return lenet5.predict(images_noise)
 
+
 def evaluate_perturbed_images(lenet5, images, labels, delta, verbose=0):
     deltas = np.tile(delta, images.shape[0])
     images_noise = images + deltas.reshape(images.shape[0], 28, 28, 1)
     images_noise = np.clip(images_noise, 0., 1.)
     return lenet5.model.evaluate(images_noise, labels, verbose=verbose)
+
 
 def get_distributed_best_delta(lenet5, images, labels, delta_workers, verbose=0):
     best_delta = None
@@ -135,11 +138,13 @@ def get_distributed_best_delta(lenet5, images, labels, delta_workers, verbose=0)
 
     return best_delta, worker_idx
 
+
 def plot_loss(loss_history, m):
     plt.figure(figsize=(10,6))
     plt.plot(m, loss_history[:, 0])
     plt.title('loss')
     plt.show()
+
 
 def plot_accuracy(loss_history, m):
     plt.figure(figsize=(10,6))

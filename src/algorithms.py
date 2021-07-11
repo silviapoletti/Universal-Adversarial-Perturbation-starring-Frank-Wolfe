@@ -11,6 +11,7 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsil
     :param d: image dimension
     :param epsilon: tolerance
     :param m: number of directions
+    :param verbose: can be 0 or 1 and it's used to regulate keras' output
     :return: universal perturbation
     """
     # set seed:
@@ -48,6 +49,8 @@ def decentralized_worker_job(data, y, F, d, m, ro, c, g_prec, delta, verbose=0):
     :param c: parameter linked to I-RDSA
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
+    :param verbose: can be 0 or 1 and it's used to regulate keras' output
+
     :return: gradient
     """
     g = gradient_I_RDSA_worker(data, y, F, d, m, c, delta, verbose)
@@ -221,7 +224,7 @@ def distributed_zo_FW(data_workers, y, F, T, M, d, epsilon, m, A):
     D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
     W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
     # initialization:
-    delta = np.zeros((M,d))
+    delta = np.zeros((M, d))
     delta_bar = np.zeros((M, d))
     g_workers = np.zeros((M, d))
     g_bar = np.zeros((M, d))
@@ -272,5 +275,5 @@ def distributed_zo_FW_worker_job_consensus(neighbors_indices, W_row, measure):
     """
     tot_sum = np.zeros(measure.shape[1])
     for i in neighbors_indices:
-        tot_sum += W_row[i] * measure[i,:]
+        tot_sum += W_row[i] * measure[i, :]
     return tot_sum

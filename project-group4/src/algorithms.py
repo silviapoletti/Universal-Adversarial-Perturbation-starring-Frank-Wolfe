@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsilon, m, tol=None, verbose=0):
+def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsilon, m, verbose=0):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
@@ -11,7 +11,7 @@ def decentralized_stochastic_gradient_free_FW(data_workers, y, F, T, M, d, epsil
     :param d: image dimension
     :param epsilon: tolerance
     :param m: number of directions
-    :param tol: tolerance for duality gap
+    :param verbose: can be 0 or 1 and it's used to regulate keras' output
     :return: universal perturbation
     """
     # set seed:
@@ -49,6 +49,8 @@ def decentralized_worker_job(data, y, F, d, m, ro, c, g_prec, delta, verbose=0):
     :param c: parameter linked to I-RDSA
     :param g_prec: g computed by the same worker at the previous iteration, coming from the master node
     :param delta: perturbation
+    :param verbose: can be 0 or 1 and it's used to regulate keras' output
+
     :return: gradient
     """
     g = gradient_I_RDSA_worker(data, y, F, d, m, c, delta, verbose)
@@ -75,7 +77,7 @@ def gradient_I_RDSA_worker(data_worker, y, F, d, m, c, delta, verbose=1):
     return g
 
 
-def decentralized_variance_reduced_zo_FW(data_workers, y, F, T, M, d, epsilon, S1, S2, n, q, tol=None):
+def decentralized_variance_reduced_zo_FW(data_workers, y, F, T, M, d, epsilon, S1, S2, n, q):
     """
     :param data_workers: images. Each row contains the images for a single worker.
     :param y: labels
@@ -222,7 +224,7 @@ def distributed_zo_FW(data_workers, y, F, T, M, d, epsilon, m, A):
     D_half = np.linalg.inv(D ** (1 / 2))  # diagonal matrix
     W = np.identity(M) - np.dot(D_half, np.dot(L, D_half))
     # initialization:
-    delta = np.zeros((M,d))
+    delta = np.zeros((M, d))
     delta_bar = np.zeros((M, d))
     g_workers = np.zeros((M, d))
     g_bar = np.zeros((M, d))
@@ -266,12 +268,12 @@ def distributed_zo_FW(data_workers, y, F, T, M, d, epsilon, m, A):
 
 def distributed_zo_FW_worker_job_consensus(neighbors_indices, W_row, measure):
     """
-    :param neighbors_indices:
-    :param W_row:
-    :param measure: Measure can be delta or G gradient.
-    :return:
+    :param neighbors_indices: list of the neighbours' indices
+    :param W_row: a row of the matrix W
+    :param measure: it can be delta or G gradient.
+    :return: weighted sum
     """
     tot_sum = np.zeros(measure.shape[1])
     for i in neighbors_indices:
-        tot_sum += W_row[i] * measure[i,:]
+        tot_sum += W_row[i] * measure[i, :]
     return tot_sum
