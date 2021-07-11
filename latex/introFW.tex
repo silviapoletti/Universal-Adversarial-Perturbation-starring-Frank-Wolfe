@@ -18,8 +18,8 @@ Let's consider the constrained stochastic optimization problem defined as
 	& = \argmin_{\lVert \mbox{\boldmath$\scriptstyle \delta$}\rVert_{\infty}\leq\varepsilon} \mathbb{E}_{(\mathbf{x},y)\sim \mathcal{P}}[-F(\mathbf{x}+\mbox{\boldmath$ \delta$},y)]
 \end{flalign}
 where the couples $(\mathbf{x},y)$ represent the labeled data given in input to the classifier and $F(\mathbf{x},y)$ is
-the corresponding loss function. This optimization problem formalizes the procedure to generate a universal adversarial
-perturbation that maximizes the loss function on the convex set defined by the infinity norm
+the corresponding loss function. This optimization problem formalizes the procedure to generate a Universal Adversarial
+Perturbation that maximizes the loss function on the convex set defined by the infinity norm
 $\displaystyle \lVert \mbox{\boldmath$ \delta$}\rVert_{\infty} = \max_{i}|\delta_i|$.\\ \indent According to this formulation,
 the adversarial examples are designed to lead to misclassification and the constraint ensures a minimal visual distortion to the human eyes. \\
 
