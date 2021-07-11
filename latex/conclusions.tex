@@ -5,7 +5,7 @@ Stochastic Gradient Free Frank-Wolfe algorithms.
 First of all, we have shown that the perturbations created by Decentralized (\ref{decentralized}) and Distributed (\ref{distributed})
 SGF FW algorithms present a similar and more clear pattern compared to the Decentralized Variance-Reduced SGF FW
 algorithm (\ref{variance-reduced}). In particular, we can clearly see that the reproduced pattern has a 3-shape, which
-leads the majority of handwritten digits to be misclassified as 3. This can be explained by the concept of \textit{dominant labels},
+leads the majority of handwritten digits to be misclassified as 3 or 8, which has a similar shape. This can be explained by the concept of \textit{dominant labels},
 mentioned in Section \ref{section:perturb}. In fact, digit 3 is a wide number, that covers most of the space in the image. Therefore, a
 perturbation with a 3-shape can easily lead to the misclassification of smaller numbers such as 1 and 7, which occupy
 less space in the image. On the contrary, the perturbations produced by the Decentralized Variance-Reduced SGF FW algorithm,
