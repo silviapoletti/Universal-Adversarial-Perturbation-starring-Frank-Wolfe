@@ -6,7 +6,7 @@ First of all, we have shown that the perturbations created by Decentralized (\re
 SGF FW algorithms present a similar and more clear pattern compared to the Decentralized Variance-Reduced SGF FW
 algorithm (\ref{variance-reduced}). In particular, we can clearly see that the reproduced pattern has a 3-shape, which
 leads the majority of handwritten digits to be misclassified as 3. This can be explained by the concept of \textit{dominant labels},
-mentioned in Section \ref{section:perturb}. In fact, number 3 is a wide number, that covers most of the space in the image. Therefore, a
+mentioned in Section \ref{section:perturb}. In fact, digit 3 is a wide number, that covers most of the space in the image. Therefore, a
 perturbation with a 3-shape can easily lead to the misclassification of smaller numbers such as 1 and 7, which occupy
 less space in the image. On the contrary, the perturbations produced by the Decentralized Variance-Reduced SGF FW algorithm,
 don't have a clear pattern and the noise associated with them looks randomly spread.
@@ -30,7 +30,7 @@ fact that each node has access only to the computations made by its neighbors. T
 method to compute the gradient, i.e. the I-RDSA scheme with a small value for $m$, makes the resulting perturbation
 less performing. Nevertheless, the attack performed with the perturbation obtained from Algorithm \ref{distributed} is satisfying enough, since random noise resulted to be much less effective.
 
-Finally, in our last experiment we proved that the perturbation created with algorithm \ref{decentralized} on LeNet-5's loss function is universal
+Finally, in our last experiment we proved that the perturbation created with Algorithm \ref{decentralized} on LeNet-5's loss function is universal
 not only with respect to the MNIST dataset, but also across different deep neural network architectures, such as AlexNet.
 % confronto tra i nostri metodi:
 % - confronto pattern --> how the noise is spread in the perturbation
