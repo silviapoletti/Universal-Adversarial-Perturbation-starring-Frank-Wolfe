@@ -13,20 +13,19 @@ don't have a clear pattern and the noise associated with them looks randomly spr
 
 Secondly, the algorithm that reached better results in terms of misclassification is Algorithm \ref{decentralized},
 which lowered the classifier's accuracy to 55\%. In this sense, the worst algorithm was \ref{variance-reduced} since
-it was unable to lower the classifier's accuracy below 84\%.
+it was unable to decrease the classifier's accuracy below 84\%.
 
 If we compare the execution time of the three algorithms, we can observe that algorithms \ref{decentralized} and \ref{distributed}
 are much faster then algorithm \ref{variance-reduced}. This is due to the fact that Algorithm \ref{variance-reduced}
 employs KWSA, which is very expensive in terms of CPU time.
 
 Compared to the experiments described in paper \cite{A3}, we obtained slightly higher error rates with algorithm
-\ref{decentralized}, while, with algorithm \ref{distributed} , we got lower error rates. The latter result can be
+\ref{decentralized}, while, with algorithm \ref{distributed} , we achieved lower error rates. The latter result can be
 explained by the fact that we chose to use I-RDSA with $m=15$ instead of KWSA, to reduce the time complexity of the algorithm,
 although KWSA gives a more precise gradient approximation. Furthermore, the distributed setting of algorithm \ref{distributed}
 naturally leads to a less precise gradient approximation, due to the fact that each node has access only to the
-computations made by its neighbours. Therefore, the choice of a less precise method to compute the gradient, i.e. I-RDSA with a
-small value for $m$, make the resulting perturbation less effective. Nevertheless, we can consider the result we obtained
-with this algorithm satifiable.
+computations made by its neighbors. Therefore, the choice of a less precise method to compute the gradient, i.e. I-RDSA with a
+small value for $m$, make the resulting perturbation less effective. Nevertheless, with this algorithm, we can consider the obtained result satisfying.
 
 
 % confronto tra i nostri metodi:
