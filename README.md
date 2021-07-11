@@ -9,7 +9,7 @@ In the `src` folder, we have the main following scripts:
 - `main_variance_reduced.py`
 - `main_decentralized.py`
 
-The final analysis are summurized in the Jupyter notebooks:
+The final analysis are summarized in the Jupyter notebooks:
 - `demo.ipynb`
 - `alexnet_test.ipynb`
 
