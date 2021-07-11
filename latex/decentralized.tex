@@ -4,7 +4,7 @@ We then tuned the hyperparameter $m$ for the number of directions to be sampled 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=6cm]{accuracy.png}
-	\caption{{\small This plot was obtained by running the Algorithm \ref{decentralized} multiple times, while changing the value of the parameter $m$ (horizontal axis) from $5$ to $40$ and mantaining all the other parameter fixed. The vertical axes indicates the values of the accuracy.}}
+	\caption{{\small This plot was obtained by running Algorithm \ref{decentralized} multiple times, while changing the value of the parameter $m$ (horizontal axis) from $5$ to $40$ and mantaining all the other parameter fixed. The vertical axes indicates the values of the accuracy.}}
 	\label{fig:accuracy}
 \end{figure}
 \indent With the increasing of $m$, the running time becames very large and for this reason we had to find a value for $m$ which returns a low accuracy with respect to a reasonable running time. We ended up with $m=15$, which is a good compromise between the two, and mantained this value fixed for all the runs.\\
