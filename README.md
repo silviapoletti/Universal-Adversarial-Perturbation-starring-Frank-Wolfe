@@ -1,8 +1,9 @@
 # Universal Adversarial Perturbation starring Frank-Wolfe
 
 The main goal of this project is to analyze different Stochastic Gradient Free Frank-Wolfe algorithms for producing 
-Universal Adversarial Perturbations. These perturbations are designed to fool advanced convolutional neural networks for the classification 
-task on the MNIST dataset.</br> 
+Universal Adversarial Perturbations. These perturbations are designed to fool advanced convolutional neural networks on
+the classification task performed over the MNIST dataset.
+
 The algorithms we analyzed are based on Anit Kumar Sahu and Soummya Kar 
 [paper](https://www.researchgate.net/publication/343733027_Decentralized_Zeroth-Order_Constrained_Stochastic_Optimization_Algorithms_Frank-Wolfe_and_Variants_With_Applications_to_Black-Box_Adversarial_Attacks),
 and they are:

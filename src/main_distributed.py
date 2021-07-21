@@ -1,8 +1,5 @@
-from lenet5 import *
-import numpy as np
 import utils
 from algorithms import *
-import matplotlib.pyplot as plt
 
 data_workers, y, lenet5, data, labels,  test_x, test_y = utils.get_data()
 

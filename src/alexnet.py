@@ -1,7 +1,6 @@
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import datasets, layers, models, losses
-import numpy as np
 
 
 class AlexNet:
