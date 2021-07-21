@@ -30,3 +30,5 @@ latex/*.pdf
 *.bbl
 *.blg
 *.gz
+
+.Rhistory
