@@ -15,4 +15,4 @@ n = 5  # n=10
 q = 5  # q=7, q=9
 
 delta = decentralized_variance_reduced_zo_FW(data_workers, y, lenet5.negative_loss, T, M, d, epsilon, S1, S2, n, q)
-np.save(f"../data/perturbations/reduced_variance/perturbation_variance_n{n}_q{q}", delta[-1])
+np.save(f"../data/perturbations/variance_reduced/perturbation_variance_n{n}_q{q}", delta[-1])
