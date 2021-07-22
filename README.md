@@ -8,8 +8,8 @@ The algorithms we analyzed are based on Anit Kumar Sahu and Soummya Kar
 [paper](https://www.researchgate.net/publication/343733027_Decentralized_Zeroth-Order_Constrained_Stochastic_Optimization_Algorithms_Frank-Wolfe_and_Variants_With_Applications_to_Black-Box_Adversarial_Attacks),
 and they are:
   - Decentralized Stochastic Gradient Free Frank-Wolfe
-  - Decentralized Variance-Reduced Zeroth-Order Franke-Wolfe
-  - Distributed Zeroth-Order Franke-Wolfe
+  - Decentralized Variance-Reduced Zeroth-Order Frank-Wolfe
+  - Distributed Zeroth-Order Frank-Wolfe
 
 In the document `report - Bigarella_Poletti_Singh_Zen.pdf`, we reported some key concepts about adversarial attacks and
 the developed algorithms; finally we discussed the experiments we carried out and our results.
