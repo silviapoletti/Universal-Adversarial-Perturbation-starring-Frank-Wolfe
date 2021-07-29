@@ -1,6 +1,4 @@
 from algorithms import *
-from lenet5 import *
-import numpy as np
 from utils import *
 
 data_workers, y, lenet5, data, labels,  test_x, test_y = get_data()
