@@ -1,6 +1,6 @@
 # Universal Adversarial Perturbation starring Frank-Wolfe
 
-The main goal of this project is to analyze different Stochastic Gradient Free Frank-Wolfe algorithms for producing 
+The main goal of this project is to analyze different Stochastic Gradient Free Frank-Wolfe algorithms based on Decentralized and Distributed architectures for producing 
 Universal Adversarial Perturbations. These perturbations are designed to fool advanced convolutional neural networks on
 the classification task performed over the MNIST dataset.
 
