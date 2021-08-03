@@ -11,6 +11,9 @@
 \usepackage{listings}
 \usepackage{mathtools,eucal}
 \usepackage{graphicx}
+\usepackage{makecell}
+%\setlength{\tabcolsep}{65pt}
+%\renewcommand{\arraystretch}{2.5}
 \graphicspath{ {../data/img/decentralized_stoch/} {../data/img/distributed/}{../data/img/variance_reduced/} {../data/perturbations/decentralized_stoch/}{../data/perturbations/variance_reduced/}{../data/perturbations/distributed/}{../data/img}}
 \usepackage{bbold}
 \usepackage{caption}
@@ -31,8 +34,15 @@
 \usepackage{flushend}
 
 \begin{document}
-\title{Universal Adversarial Perturbation \\ starring Frank-Wolfe}
-\author{Chiara Bigarella\\{\tt\footnotesize Student nr. 2004248}\and Silvia Poletti\\{\tt\footnotesize Student nr. 1239133}\and Gurjeet Singh\\{\tt\footnotesize Student nr. 2004251}\and Francesca Zen\\{\tt\footnotesize Student nr. 2010640}}
+\title{Universal Adversarial Perturbations \\ starring Frank-Wolfe}
+\author{Chiara Bigarella\\{\tt\footnotesize chiara.bigarella.1@studenti.unipd.it}\and \qquad Silvia Poletti\\{\qquad \tt\footnotesize silvia.poletti@studenti.unipd.it}\and \, \,Gurjeet Singh\\{\tt\footnotesize \,\, gurjeet.singh@studenti.unipd.it}\and \qquad \quad  Francesca Zen\\{\qquad \quad  \tt\footnotesize francesca.zen@studenti.unipd.it}}
+%\author{\begin{adjustwidth}{-2cm}{}
+%		\begin{tabular}{c c}
+%			\makecell{Chiara Bigarella \\ \tt\small chiara.bigarella.1@studenti.unipd.it} & \makecell{Silvia Poletti \\ \tt \small silvia.poletti@studenti.unipd.it} \\
+%			\makecell{Gurjeet Singh\\ \tt \small gurjeet.singh@studenti.unipd.it} & \makecell{Francesca Zen \\ \tt \small francesca.zen@studenti.unipd.it}
+%		\end{tabular}
+%		\end{adjustwidth}
+%	}
 \maketitle
 
 % TODO: insert sections here 
@@ -42,6 +52,7 @@
 	the classification task on the MNIST dataset. Before discussing the implementation, some key concepts about the adversarial
 	attacks and the Frank-Wolfe framework are introduced. The last two sections instead concern the experiments and the conclusive comparison of the results.
 \end{abstract}
+%\setlength{\tabcolsep}{6pt}
 \input{intro}
 \input{introFW}
 \input{methods}
