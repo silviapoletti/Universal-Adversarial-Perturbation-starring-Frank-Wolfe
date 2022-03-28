@@ -40,55 +40,53 @@ to the algorithm Decentralized Variance-Reduced (2). In particular, we can clear
 ![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/3shape(2).png?raw=true)
 
 This can be explained by the concept of dominant
-labels, mentioned in Section 1.2. In fact, digit 3 is a wide
+labels. In fact, digit 3 is a wide
 number, that covers most of the space in the image. Therefore,
 a perturbation with a 3-shape can easily lead to the
 misclassification of smaller numbers such as 1 and 7, which
 occupy less space in the image. On the contrary, the perturbations
-produced by the Decentralized Variance-Reduced
-SGF FW algorithm, don’t have a clear pattern and the noise
+produced by the algorithm Decentralized Variance-Reduced (2), don’t have a clear pattern and the noise
 associated with them looks randomly spread.
+
 Secondly, the algorithm that reached better results in
-terms of misclassification is Algorithm 1, which lowered
-the classifier’s accuracy to 55%. In this sense, the worst
-algorithm was 2 since it was unable to decrease the classifier’s
-accuracy below 84%. A possible improvement could
-be a better tuning of the hyperparameters; in fact in our experiments
-we considered quite low values of the numberM
-of workers, the number T of queries and the number S2 of
-sampled component functions and we also set the period parameter
-q so that the KWSA scheme was called at most 4
-times.
-If we compare the execution time of the three algorithms,
-we can observe that algorithms 1 and 3 are much faster
-then Algorithm 2. This is due to the fact that Algorithm 2
-employs KWSA, which is very expensive in terms of CPU
-time.
-Compared to the experiments described in paper [4], we
-obtained slightly higher error rates with Algorithm 1, while,
-with Algorithm 3 , we achieved lower error rates. The latter
+terms of misclassification is algorithm Decentralized (1), which lowered
+the classifier’s accuracy to 55%. In this sense, the worst results are by
+algorithm Variance-Reduced (2) since it was unable to decrease the classifier’s
+accuracy below 84%. 
+
+Compared to the experiments described in the aforementioned paper, we
+obtained slightly higher error rates with algorithm Decentralized (1), while,
+with algorithm Distributed (3), we achieved lower error rates. The latter
 result can be explained by the fact that we chose to use
 the I-RDSA scheme with m = 15 instead of the KWSA
 scheme, to reduce the time complexity of the algorithm, although
 the KWSA scheme gives a more precise gradient
 approximation.
-Furthermore, the distributed setting of Algorithm 3 naturally
+Furthermore, the distributed setting of algorithm Distributed (3) naturally
 leads to a less precise gradient approximation than the
 one of Algorithm 1, due to the fact that each node has access
 only to the computations made by its neighbors. Therefore,
 the choice of a less precise method to compute the gradient,
 i.e. the I-RDSA scheme with a small value form, makes the
 resulting perturbation less performing. Nevertheless, the attack
-performed with the perturbation obtained from Algorithm
-3 is satisfying enough, since random noise resulted to
+performed with the perturbation obtained from algorithm Distributed (3) is satisfying enough, since random noise resulted to
 be much less effective.
+
 Moreover, it has to be noticed that although the perturbations
-of Algorithm 1 lower more the accuracy than the ones
-of Algorithm 3, the latter are much less visible. This can be
-easily seen by comparing the adversarial example in Figure
-2 with the one in Figure 7.
+of algorithm Decentralized (1) lower more the accuracy than the ones
+of algorithm Distributed (3), the latter are much less visible. This can be
+easily seen by comparing the adversarial example in the following figures.
+
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(1).png?raw=true)
+
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(2).png?raw=true)
+
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(3).png?raw=true)
+
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(gauss).png?raw=true)
+
 Finally, in our last experiment we proved that the perturbation
-created with Algorithm 1 on LeNet-5’s loss function
+created with algorithm Decentralized (1) on LeNet-5’s loss function
 is universal not only with respect to the MNIST dataset,
 but also across different deep neural network architectures,
 such as AlexNet.
