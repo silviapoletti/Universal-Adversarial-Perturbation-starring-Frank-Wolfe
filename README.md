@@ -77,13 +77,13 @@ of algorithm Decentralized (1) lower more the accuracy than the ones
 of algorithm Distributed (3), the latter are much less visible. This can be
 easily seen by comparing the adversarial example in the following figures.
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(1).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/images/adv(1).png?raw=true)
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(2).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/images/adv(2).png?raw=true)
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(3).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/images/adv(3).png?raw=true)
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/images/adv(gauss).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/images/adv(gauss).png?raw=true)
 
 Finally, in our last experiment we proved that the perturbation
 created with algorithm Decentralized (1) on LeNet-5’s loss function
