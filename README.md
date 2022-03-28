@@ -4,7 +4,7 @@ The main goal of this project is to analyze different Stochastic Gradient Free F
 Universal Adversarial Perturbations. These perturbations are designed to fool advanced convolutional neural networks on
 the classification task performed over the MNIST dataset.
 
-The algorithms we analyzed are based on Anit Kumar Sahu and Soummya Kar 
+The algorithms we analyzed are based on the Anit Kumar Sahu and Soummya Kar 
 [paper](https://www.researchgate.net/publication/343733027_Decentralized_Zeroth-Order_Constrained_Stochastic_Optimization_Algorithms_Frank-Wolfe_and_Variants_With_Applications_to_Black-Box_Adversarial_Attacks), namely:
   - Decentralized Stochastic Gradient Free Frank-Wolfe
   - Decentralized Variance-Reduced Zeroth-Order Frank-Wolfe
