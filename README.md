@@ -19,9 +19,9 @@ You can find more details about adversarial attacks and the three developed algo
 First of all, we have shown that the perturbations created by the Alg1 and Alg3 present a similar and more clear pattern compared 
 to Alg2. In particular, we can clearly see that the reproduced pattern has a 3-shape, which leads the majority of handwritten digits to be misclassified as 3 or 8, which has a similar shape. 
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/report/3shape(1).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/3shape(1).png)
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/69c2e7484cf1ae829b6d5329116956fcf84a41e7/report/3shape(2).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/3shape(2).png)
 
 This can be explained by the concept of dominant
 labels. In fact, digit 3 is a wide
@@ -61,13 +61,13 @@ of Alg1 lower more the accuracy than the ones
 of Alg3, the latter are much less visible. This can be
 easily seen by comparing the adversarial example in the following figures.
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/report/adv(1).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png)
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/report/adv(2).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(2).png)
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/report/adv(3).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(3).png)
 
-![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/3d7ad97ce0f030a2e7dc70624d8cfe133e87e987/report/adv(gauss).png?raw=true)
+![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(gauss).png)
 
 Finally, in our last experiment we proved that the perturbation
 created with Alg1 on LeNet-5’s loss function
