@@ -66,6 +66,9 @@ easily seen by comparing the adversarial example in the following figures.
   <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png"/>
   <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(3).png"/>
   <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(2).png"/>
+</p>
+
+<p align="center", vertical_align="center">
   <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(gauss).png"/>
 </p>
 
