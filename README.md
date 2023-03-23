@@ -61,9 +61,9 @@ of Alg1 lower more the accuracy than the ones
 of Alg3, the latter are much less visible. This can be
 easily seen by comparing the adversarial example in the following figures.
 
-<div style="text-align:center">
+<p align="center">
   <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png"/>
-</div>
+</p>
 
 ![alt text](https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png)
 
