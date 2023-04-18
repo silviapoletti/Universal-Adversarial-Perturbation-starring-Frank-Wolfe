@@ -63,8 +63,8 @@ of Alg3, the latter are much less visible. This can be
 easily seen by comparing the adversarial example in the following figures.
 
 <p align="center", vertical_align="center">
-  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png" width="45%"/>
-  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(3).png" width="45%"/>
+  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png" height=100/>
+  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(3).png" height=100/>
   <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(2).png"/>
 </p>
 
