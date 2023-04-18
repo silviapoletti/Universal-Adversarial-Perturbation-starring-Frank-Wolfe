@@ -24,6 +24,9 @@ def get_data(dim=100, load=True):
 
     labels_number = 10
     data_per_classes = []
+    
+    # For each label, select a number of images corresponding to dim 
+    # from the LeNet's correct classifications
     for label_class in range(0, labels_number):
         data_per_classes.append(right_pred_data[right_pred_labels == label_class][:dim])
 
@@ -34,6 +37,7 @@ def get_data(dim=100, load=True):
     for offset in range(0, dim, step):
         image_worker = []
         for c in range(0, labels_number):
+            # each worker is assigned with a bunch of images for each class c
             image_worker.extend(data_per_classes[c, offset:offset+step, :, :, :])
         data_workers.append(image_worker)
 
@@ -42,7 +46,7 @@ def get_data(dim=100, load=True):
     y_workers = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     y_workers = np.repeat(y_workers, step)
 
-    return data_workers, y_workers, lenet5, right_pred_data, right_pred_labels,  test_x, test_y
+    return data_workers, y_workers, lenet5, right_pred_data, right_pred_labels, test_x, test_y
 
 
 def get_image_perturbation(perturbation, title, axis):
