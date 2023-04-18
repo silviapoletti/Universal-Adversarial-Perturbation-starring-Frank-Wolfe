@@ -20,9 +20,9 @@ First of all, we have shown that the perturbations created by the Alg1 and Alg3 
 to Alg2. In particular, we can clearly see that the reproduced pattern has a 3-shape, which leads the majority of handwritten digits to be misclassified as 3 or 8, which has a similar shape. 
 
 <p align="center">
-  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/3shape(1).png"/>
-  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/3shape(2).png"/>
-</p>
+  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/3shape(1).png" width="45%"/>
+  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/3shape(2).png" width="45%"/>
+</p
 
 This can be explained by the concept of dominant
 labels. In fact, digit 3 is a wide
@@ -63,8 +63,8 @@ of Alg3, the latter are much less visible. This can be
 easily seen by comparing the adversarial example in the following figures.
 
 <p align="center", vertical_align="center">
-  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png"/>
-  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(3).png"/>
+  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(1).png" height=250/>
+  <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(3).png" height=250/>
   <img src="https://github.com/silviapoletti/Universal-Adversarial-Perturbation-starring-Frank-Wolfe/blob/10851a16056cb34d04af75dfe92e896dbedf0d10/report/adv(2).png"/>
 </p>
 
