@@ -1,4 +1,5 @@
 # Universal Adversarial Perturbation starring Frank-Wolfe Zeroth-Order Methods
+<img align="right" width="30%" src="https://miro.medium.com/v2/resize:fit:700/1*8gHcUx1pKwxb0A6lze9tOw.jpeg">
 
 The main goal of this project is to analyze different Stochastic Gradient-Free (Zeroth-Order) Frank-Wolfe algorithms based on Decentralized and Distributed architectures for producing Universal Adversarial Perturbations. These perturbations are designed to fool advanced convolutional neural networks on
 the classification task performed over the MNIST dataset.
