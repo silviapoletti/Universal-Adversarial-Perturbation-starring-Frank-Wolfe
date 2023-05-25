@@ -15,7 +15,7 @@ Moreover, other two works, namely [A. K. Sahu, M. Zaheer, S. Kar - "Towards Grad
 
 You can find more details about adversarial attacks and the three developed algorithms in the Report PDF, as well as our experimental analysis.
 
-## Final considerations
+## Experimental results
 
 First of all, we have shown that the perturbations created by the Alg1 and Alg3 present a similar and more clear pattern compared 
 to Alg2. In particular, we can clearly see that the reproduced pattern has a 3-shape, which leads the majority of handwritten digits to be misclassified as 3 or 8, which has a similar shape. 
