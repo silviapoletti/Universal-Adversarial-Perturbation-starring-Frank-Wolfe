@@ -11,7 +11,7 @@ The zeroth-order algorithms presented in this article are:
   - Decentralized Variance-Reduced Zeroth-Order Frank-Wolfe (Alg2)
   - Distributed Stochastic Gradient Free Frank-Wolfe (Alg3)
 
-Moreover, other two works, namely [A. K. Sahu, M. Zaheer, S. Kar - "Towards Gradient Free and Projection Free Stochastic Optimization" (2019)](https://arxiv.org/abs/1810.03233) and [S. M. Moosavi-Dezfooli et. al. - "Universal Adversarial Perturbations" (2017)](https://arxiv.org/abs/1610.08401), have been considered for further insights about the topic.
+Moreover, other two works, namely [A. K. Sahu, M. Zaheer, S. Kar - "Towards Gradient Free and Projection Free Stochastic Optimization" (2019)](https://arxiv.org/abs/1810.03233) and [S. M. Moosavi-Dezfooli et. al. - "Universal Adversarial Perturbations" (2017)](https://arxiv.org/abs/1610.08401), have been considered for offering further insights about the topic.
 
 You can find more details about adversarial attacks and the three developed algorithms in the Report PDF, as well as our experimental analysis.
 
